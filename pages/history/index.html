@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Riwayat Kehadiran · SIMLU Unklab</title>
+
+  <script src="/assets/vendor/tailwindcss-browser.js"></script>
+  <script src="/assets/js/tailwind-boot.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&family=Zilla+Slab:wght@600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-page font-sans text-body">
+
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col bg-primary-900 px-4 py-6 transition-transform max-lg:-translate-x-full" aria-label="Menu utama">
+    <a href="/" class="flex items-center gap-2 px-2 font-semibold text-white">
+      <span class="flex h-9 w-9 items-center justify-center rounded-ctl bg-accent text-lg font-bold text-ink">S</span>
+      SIMLU · Unklab
+    </a>
+    <nav class="mt-8 flex flex-1 flex-col gap-1">
+      <a href="/pages/dashboard/" class="sidebar-item"><i class="bi bi-grid-1x2" aria-hidden="true"></i>Dashboard</a>
+      <a href="/pages/schedule/" class="sidebar-item"><i class="bi bi-calendar-week" aria-hidden="true"></i>Jadwal</a>
+      <a href="/pages/history/" class="sidebar-item active"><i class="bi bi-clock-history" aria-hidden="true"></i>Riwayat</a>
+      <a href="/pages/requests/" class="sidebar-item"><i class="bi bi-arrow-left-right" aria-hidden="true"></i>Pengajuan</a>
+      <a href="/pages/profile/" class="sidebar-item"><i class="bi bi-person-circle" aria-hidden="true"></i>Profil</a>
+    </nav>
+    <button id="btnLogout" class="sidebar-item w-full text-left"><i class="bi bi-box-arrow-left" aria-hidden="true"></i>Keluar</button>
+  </aside>
+  <div id="backdrop" class="fixed inset-0 z-40 hidden bg-black/40"></div>
+
+  <div class="ml-60 max-lg:ml-0">
+    <div class="sticky top-0 z-30 hidden items-center gap-3 border-b border-line bg-white px-4 py-3 max-lg:flex">
+      <button id="btnMenu" class="rounded-ctl p-2 text-primary-900 hover:bg-primary-50" aria-label="Buka menu">
+        <i class="bi bi-list text-2xl" aria-hidden="true"></i>
+      </button>
+      <span class="font-semibold text-primary-900">SIMLU · Riwayat</span>
+    </div>
+
+    <main class="mx-auto max-w-6xl px-6 py-8 max-md:px-4">
+      <div class="flex items-center justify-between max-md:flex-col max-md:items-start max-md:gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-ink">Riwayat Kehadiran</h1>
+          <p class="mt-1 text-sm text-mute">Seluruh catatan absensimu</p>
+        </div>
+        <label class="block text-sm">
+          <span class="label">Bulan</span>
+          <select id="monthFilter" class="field w-44"></select>
+        </label>
+      </div>
+
+      <!-- KPI -->
+      <section class="mt-6 grid grid-cols-3 gap-4 max-md:grid-cols-1">
+        <div class="card-soft p-5">
+          <p class="text-xs text-mute">Hadir</p>
+          <p class="mt-1 font-mono text-3xl font-bold text-ok" id="kpiHadir">0</p>
+        </div>
+        <div class="card-soft p-5">
+          <p class="text-xs text-mute">Telat</p>
+          <p class="mt-1 font-mono text-3xl font-bold text-bad" id="kpiTelat">0</p>
+        </div>
+        <div class="card-soft p-5">
+          <p class="text-xs text-mute">Total jam</p>
+          <p class="mt-1 font-mono text-3xl font-bold text-ink" id="kpiJam">0j</p>
+        </div>
+      </section>
+
+      <!-- Tabel -->
+      <section class="card-soft mt-6 overflow-hidden">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-primary-900 text-left text-white">
+              <th class="px-6 py-3 font-medium">Tanggal</th>
+              <th class="px-4 py-3 font-medium">Check-In</th>
+              <th class="px-4 py-3 font-medium">Check-Out</th>
+              <th class="px-4 py-3 font-medium">Durasi</th>
+              <th class="px-6 py-3 font-medium">Status</th>
+            </tr>
+          </thead>
+          <tbody id="historyRows" class="divide-y divide-line"></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/db.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    const user = auth.requireRole('student');
+    if (user) init();
+
+    function fmtDate(iso) { return new Date(iso + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'long' }); }
+    function hm(t) { const [h, m] = t.split(':').map(Number); return h * 60 + m; }
+
+    async function init() {
+      // Filter bulan dari data yang ada
+      const all = (await db.list('attendance')).filter(a => a.student_id === user.id).sort((x, y) => y.date.localeCompare(x.date));
+      const months = [...new Set(all.map(a => a.date.slice(0, 7)))];
+      const sel = document.getElementById('monthFilter');
+      sel.innerHTML = months.map(m => {
+        const label = new Date(m + '-01T00:00:00').toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+        return '<option value="' + m + '">' + label + '</option>';
+      }).join('');
+      sel.addEventListener('change', render);
+      render();
+    }
+
+    async function render() {
+      const month = document.getElementById('monthFilter').value;
+      const rows = (await db.list('attendance')).filter(a => a.student_id === user.id && a.date.startsWith(month))
+        .sort((x, y) => y.date.localeCompare(x.date));
+      let hadir = 0, telat = 0, minutes = 0;
+      for (const a of rows) {
+        if (a.check_in && a.check_out) { minutes += hm(a.check_out) - hm(a.check_in); }
+        if (a.status === 'On Time') hadir++;
+        if (a.status === 'Late') telat++;
+      }
+      document.getElementById('kpiHadir').textContent = hadir;
+      document.getElementById('kpiTelat').textContent = telat;
+      document.getElementById('kpiJam').textContent = (minutes / 60).toFixed(1) + 'j';
+
+      document.getElementById('historyRows').innerHTML = rows.map(a => {
+        const cls = a.status === 'On Time' ? 'badge-ok' : a.status === 'Late' ? 'badge-bad' : 'badge-soft';
+        const dur = a.check_in && a.check_out ? Math.floor((hm(a.check_out) - hm(a.check_in)) / 60) + 'j ' + ((hm(a.check_out) - hm(a.check_in)) % 60) + 'm' : '-';
+        return '<tr>' +
+          '<td class="px-6 py-3 text-body">' + fmtDate(a.date) + '</td>' +
+          '<td class="px-4 py-3 font-mono">' + (a.check_in || '-') + '</td>' +
+          '<td class="px-4 py-3 font-mono">' + (a.check_out || '-') + '</td>' +
+          '<td class="px-4 py-3 font-mono">' + dur + '</td>' +
+          '<td class="px-6 py-3"><span class="badge ' + cls + '">' + a.status + '</span></td></tr>';
+      }).join('') || '<tr><td colspan="5" class="px-6 py-6 text-center text-mute">Belum ada kehadiran pada bulan ini.</td></tr>';
+    }
+
+    // Sidebar (layar kecil)
+    const sidebar = document.getElementById('sidebar'), backdrop = document.getElementById('backdrop'), btnMenu = document.getElementById('btnMenu');
+    function toggleMenu(open) {
+      sidebar.classList.toggle('max-lg:-translate-x-full', !open);
+      backdrop.classList.toggle('hidden', !open);
+      btnMenu.setAttribute('aria-expanded', String(open));
+    }
+    btnMenu.addEventListener('click', () => toggleMenu(sidebar.classList.contains('max-lg:-translate-x-full')));
+    backdrop.addEventListener('click', () => toggleMenu(false));
+    document.getElementById('btnLogout').addEventListener('click', () => { auth.logout(); location.replace('/pages/login/'); });
+  </script>
+</body>
+</html>

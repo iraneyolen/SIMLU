@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daftar · SIMLU Unklab</title>
+
+  <script src="/assets/vendor/tailwindcss-browser.js"></script>
+  <script src="/assets/js/tailwind-boot.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&family=Zilla+Slab:wght@600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-page font-sans text-body">
+
+  <main class="flex min-h-screen">
+    <!-- Panel brand (desktop) -->
+    <aside class="flex w-2/5 flex-col justify-between bg-primary-900 p-10 max-lg:hidden">
+      <a href="/" class="flex items-center gap-2 font-semibold text-white">
+        <span class="flex h-9 w-9 items-center justify-center rounded-ctl bg-accent text-lg font-bold text-ink">S</span>
+        SIMLU · Unklab
+      </a>
+      <div>
+        <h1 class="font-display text-3xl font-semibold text-white">Bergabung jadi<br>Mahasiswa Labor</h1>
+        <ul class="mt-4 space-y-2 text-sm text-primary-100">
+          <li><i class="bi bi-check2 mr-2 text-accent" aria-hidden="true"></i>Pendapatan per jam kerja</li>
+          <li><i class="bi bi-check2 mr-2 text-accent" aria-hidden="true"></i>Pengalaman kerja nyata di kampus</li>
+          <li><i class="bi bi-check2 mr-2 text-accent" aria-hidden="true"></i>Jadwal menyesuaikan kuliah</li>
+        </ul>
+      </div>
+      <p class="text-xs text-primary-100">© 2026 Universitas Klabat · Group Project WDC</p>
+    </aside>
+
+    <!-- Form -->
+    <section class="flex flex-1 items-center justify-center px-6 py-10 max-md:px-4">
+      <div class="w-full max-w-md">
+        <h2 class="text-2xl font-bold text-ink">Daftar Akun</h2>
+        <p class="mt-1 text-sm text-mute">Lengkapi data dirimu untuk mendaftar sebagai mahasiswa labor</p>
+
+        <form id="regForm" class="mt-8 space-y-4" novalidate>
+          <div>
+            <label class="label" for="name">Nama Lengkap</label>
+            <input class="field" type="text" id="name" name="name" autocomplete="name" placeholder="Sesuai KTM" required>
+            <p class="err hidden" id="errName"></p>
+          </div>
+          <div>
+            <label class="label" for="nim">NIM</label>
+            <input class="field" type="text" id="nim" name="nim" inputmode="numeric" placeholder="Contoh: 230102005" required>
+            <p class="help">NIM Unklab tanpa titik</p>
+            <p class="err hidden" id="errNim"></p>
+          </div>
+          <div>
+            <label class="label" for="email">Email Unklab</label>
+            <input class="field" type="email" id="email" name="email" autocomplete="email" placeholder="nama@unklab.ac.id" required>
+            <p class="err hidden" id="errEmail"></p>
+          </div>
+          <div>
+            <label class="label" for="program">Program Studi</label>
+            <select class="field" id="program" name="program" required>
+              <option value="">Pilih program studi</option>
+              <option>Sistem Informasi</option>
+              <option>Informatika</option>
+              <option>Teknologi Informasi</option>
+              <option>Lainnya</option>
+            </select>
+            <p class="err hidden" id="errProgram"></p>
+          </div>
+          <div>
+            <label class="label" for="password">Password</label>
+            <input class="field" type="password" id="password" name="password" autocomplete="new-password" required>
+            <p class="help">Minimal 6 karakter</p>
+            <p class="err hidden" id="errPassword"></p>
+          </div>
+
+          <div id="formAlert" class="hidden rounded-ctl bg-red-50 px-4 py-3 text-sm text-bad" role="alert"></div>
+
+          <button class="btn btn-primary w-full text-base" id="btnReg" type="submit">Daftar</button>
+        </form>
+
+        <p class="mt-6 text-center text-sm text-mute">
+          Sudah punya akun? <a href="/pages/login/" class="font-semibold text-primary-ink hover:underline">Masuk</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/db.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    const form = document.getElementById('regForm');
+    const alertBox = document.getElementById('formAlert');
+    const btn = document.getElementById('btnReg');
+
+    function showErr(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.remove('hidden'); }
+    function clearErrs() { document.querySelectorAll('.err').forEach(e => e.classList.add('hidden')); alertBox.classList.add('hidden'); }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearErrs();
+      const name = document.getElementById('name').value.trim();
+      const nim = document.getElementById('nim').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const program = document.getElementById('program').value;
+      const password = document.getElementById('password').value;
+
+      let ok = true;
+      if (!name) { showErr('errName', 'Nama lengkap wajib diisi'); ok = false; }
+      if (!/^\d{6,12}$/.test(nim)) { showErr('errNim', 'NIM harus 6-12 digit angka'); ok = false; }
+      if (!/^[^@\s]+@[^@\s]+$/.test(email)) { showErr('errEmail', 'Format email tidak valid'); ok = false; }
+      else if (!email.endsWith('@unklab.ac.id')) { showErr('errEmail', 'Gunakan email Unklab (@unklab.ac.id)'); ok = false; }
+      if (!program) { showErr('errProgram', 'Pilih program studi'); ok = false; }
+      if (password.length < 6) { showErr('errPassword', 'Password minimal 6 karakter'); ok = false; }
+      if (!ok) return;
+
+      // Demo statis: duplikat email dicek pada seed + overlay localStorage
+      const users = await db.list('users');
+      if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+        alertBox.textContent = 'Email sudah terdaftar. Coba masuk, atau gunakan email lain.'; alertBox.classList.remove('hidden'); return;
+      }
+
+      btn.disabled = true; btn.textContent = 'Menyimpan…';
+      try {
+        await db.insert('users', { nim, name, email, role: 'student', program });
+        // langsung buat sesi demo
+        sessionStorage.setItem('simlu:session', JSON.stringify({ id: 'new', nim, name, email, role: 'student', program }));
+        location.replace('/pages/dashboard/');
+      } catch (err) {
+        alertBox.textContent = 'Gagal menyimpan: ' + err.message; alertBox.classList.remove('hidden');
+        btn.disabled = false; btn.textContent = 'Daftar';
+      }
+    });
+  </script>
+</body>
+</html>

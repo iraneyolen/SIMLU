@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard Admin · SIMLU Unklab</title>
+
+  <script src="/assets/vendor/tailwindcss-browser.js"></script>
+  <script src="/assets/js/tailwind-boot.js"></script>
+  <script src="/assets/vendor/chart.js.umd.js" defer></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&family=Zilla+Slab:wght@600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-page font-sans text-body">
+
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col bg-primary-900 px-4 py-6 transition-transform max-lg:-translate-x-full" aria-label="Menu utama">
+    <a href="/" class="flex items-center gap-2 px-2 font-semibold text-white">
+      <span class="flex h-9 w-9 items-center justify-center rounded-ctl bg-accent text-lg font-bold text-ink">S</span>
+      SIMLU · Unklab
+    </a>
+    <nav class="mt-8 flex flex-1 flex-col gap-1">
+      <a href="/pages/admin/" class="sidebar-item active"><i class="bi bi-speedometer2" aria-hidden="true"></i>Statistik</a>
+      <a href="/pages/admin/#kelola" class="sidebar-item"><i class="bi bi-calendar-week" aria-hidden="true"></i>Kelola Shift</a>
+      <a href="/pages/admin/#pengajuan" class="sidebar-item"><i class="bi bi-arrow-left-right" aria-hidden="true"></i>Pengajuan</a>
+    </nav>
+    <button id="btnLogout" class="sidebar-item w-full text-left"><i class="bi bi-box-arrow-left" aria-hidden="true"></i>Keluar</button>
+  </aside>
+  <div id="backdrop" class="fixed inset-0 z-40 hidden bg-black/40"></div>
+
+  <div class="ml-60 max-lg:ml-0">
+    <div class="sticky top-0 z-30 hidden items-center gap-3 border-b border-line bg-white px-4 py-3 max-lg:flex">
+      <button id="btnMenu" class="rounded-ctl p-2 text-primary-900 hover:bg-primary-50" aria-label="Buka menu">
+        <i class="bi bi-list text-2xl" aria-hidden="true"></i>
+      </button>
+      <span class="font-semibold text-primary-900">SIMLU · Admin</span>
+    </div>
+
+    <main class="mx-auto max-w-6xl px-6 py-8 max-md:px-4">
+      <h1 class="text-2xl font-bold text-ink">Dashboard Admin</h1>
+      <p class="mt-1 text-sm text-mute" id="greeting">Memuat data…</p>
+
+      <!-- KPI -->
+      <section class="mt-6 grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
+        <div class="card-soft p-5">
+          <p class="text-xs text-mute">Mahasiswa labor aktif</p>
+          <p class="mt-1 font-mono text-3xl font-bold text-ink" id="kpiStudents">0</p>
+        </div>
+        <div class="card-soft p-5">
+          <p class="text-xs text-mute">Kehadiran minggu ini</p>
+          <p class="mt-1 font-mono text-3xl font-bold text-ok" id="kpiHadir">0</p>
+        </div>
+        <div class="card-soft p-5">
+          <p class="text-xs text-mute">Keterlambatan minggu ini</p>
+          <p class="mt-1 font-mono text-3xl font-bold text-bad" id="kpiTelat">0</p>
+        </div>
+        <div class="card-soft p-5">
+          <p class="text-xs text-mute">Total jam kerja minggu ini</p>
+          <p class="mt-1 font-mono text-3xl font-bold text-ink" id="kpiJam">0j</p>
+        </div>
+      </section>
+
+      <!-- Grafik -->
+      <section class="card-soft mt-6 p-6">
+        <h2 class="text-base font-semibold text-ink">Kehadiran 7 hari terakhir</h2>
+        <p class="text-sm text-mute">Jumlah mahasiswa yang check-in per hari</p>
+        <div class="mt-4 h-64 max-md:h-56"><canvas id="chartAttendance"></canvas></div>
+      </section>
+
+      <div class="mt-6 grid grid-cols-5 gap-6 max-lg:grid-cols-1">
+        <!-- Kehadiran terbaru -->
+        <section class="card-soft col-span-3 overflow-hidden max-lg:col-span-1">
+          <h2 class="px-6 pt-5 text-base font-semibold text-ink">Kehadiran terbaru</h2>
+          <table class="mt-3 w-full text-sm">
+            <thead>
+              <tr class="bg-primary-900 text-left text-white">
+                <th class="px-6 py-3 font-medium">Nama</th>
+                <th class="px-4 py-3 font-medium">Tanggal</th>
+                <th class="px-4 py-3 font-medium">Jam</th>
+                <th class="px-6 py-3 font-medium">Status</th>
+              </tr>
+            </thead>
+            <tbody id="latestRows" class="divide-y divide-line"></tbody>
+          </table>
+        </section>
+
+        <!-- Pengajuan -->
+        <section class="card-soft col-span-2 p-6 max-lg:col-span-1" id="pengajuan">
+          <h2 class="text-base font-semibold text-ink">Pengajuan menunggu</h2>
+          <ul class="mt-3 space-y-3 text-sm" id="requestList">
+            <li class="text-mute">Memuat…</li>
+          </ul>
+        </section>
+      </div>
+
+      <!-- Kelola shift -->
+      <section class="card-soft mt-6 overflow-hidden" id="kelola">
+        <div class="flex items-center justify-between px-6 pt-5 max-md:flex-col max-md:items-start max-md:gap-2">
+          <h2 class="text-base font-semibold text-ink">Shift minggu ini</h2>
+          <button class="btn btn-primary text-sm" id="btnAddShift"><i class="bi bi-plus-lg" aria-hidden="true"></i>Tambah Shift</button>
+        </div>
+        <!-- Form tambah (tersembunyi sampai tombol ditekan) -->
+        <form id="shiftForm" class="hidden flex flex-wrap items-end gap-3 border-b border-line bg-primary-50 px-6 py-4 max-md:flex-col max-md:items-stretch">
+          <label class="block text-sm">Mahasiswa
+            <select id="fStudent" class="field mt-1 w-52"></select>
+          </label>
+          <label class="block text-sm">Tanggal
+            <input type="date" id="fDate" class="field mt-1 w-40" required>
+          </label>
+          <label class="block text-sm">Mulai
+            <input type="time" id="fStart" class="field mt-1 w-28" value="13:00" required>
+          </label>
+          <label class="block text-sm">Selesai
+            <input type="time" id="fEnd" class="field mt-1 w-28" value="17:00" required>
+          </label>
+          <label class="block text-sm">Unit
+            <input type="text" id="fUnit" class="field mt-1 w-40" placeholder="Kantin" required>
+          </label>
+          <button class="btn btn-primary text-sm" type="submit">Simpan</button>
+          <button class="btn btn-outline text-sm" type="button" id="btnCancelShift">Batalkan</button>
+        </form>
+        <table class="mt-3 w-full text-sm">
+          <thead>
+            <tr class="bg-primary-900 text-left text-white">
+              <th class="px-6 py-3 font-medium">Nama</th>
+              <th class="px-4 py-3 font-medium">Tanggal</th>
+              <th class="px-4 py-3 font-medium">Unit</th>
+              <th class="px-6 py-3 font-medium">Jam</th>
+            </tr>
+          </thead>
+          <tbody id="shiftRows" class="divide-y divide-line"></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/db.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    const user = auth.requireRole('admin');
+    if (user) window.addEventListener('load', init);
+
+    const UNITS = 'Kantin, Lab FILKOM, Perpustakaan, Kantor'.split(', ');
+    function fmtDate(iso) { return new Date(iso + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' }); }
+    function hm(t) { const [h, m] = t.split(':').map(Number); return h * 60 + m; }
+    function todayISO() { return new Date().toISOString().slice(0, 10); }
+    function inThisWeek(iso) {
+      const d = new Date(iso + 'T00:00:00'), now = new Date();
+      const day = (now.getDay() + 6) % 7;
+      const monday = new Date(now); monday.setDate(now.getDate() - day); monday.setHours(0, 0, 0, 0);
+      return d >= monday;
+    }
+    function last7() {
+      const out = [];
+      for (let i = 6; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); out.push(d.toISOString().slice(0, 10)); }
+      return out;
+    }
+
+    async function init() {
+      document.getElementById('greeting').textContent = 'Halo, ' + user.name + ' · ' + new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+      const [users, attendance, shifts, requests] = await Promise.all([
+        db.list('users'), db.list('attendance'), db.list('shifts'), db.list('requests')
+      ]);
+      const students = users.filter(u => u.role === 'student');
+      const nameOf = id => (users.find(u => u.id === id) || {}).name || 'Unknown';
+
+      // KPI
+      const week = attendance.filter(a => inThisWeek(a.date) && a.check_in);
+      document.getElementById('kpiStudents').textContent = students.length;
+      document.getElementById('kpiHadir').textContent = week.filter(a => a.status === 'On Time').length;
+      document.getElementById('kpiTelat').textContent = week.filter(a => a.status === 'Late').length;
+      let minutes = 0;
+      for (const a of week) if (a.check_out) minutes += hm(a.check_out) - hm(a.check_in);
+      document.getElementById('kpiJam').textContent = (minutes / 60).toFixed(1) + 'j';
+
+      // Grafik
+      const days = last7();
+      const counts = days.map(d => attendance.filter(a => a.date === d && a.check_in).length);
+      const ctx = document.getElementById('chartAttendance').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: days.map(d => fmtDate(d)),
+          datasets: [{ label: 'Kehadiran', data: counts, backgroundColor: '#1B76BC', borderRadius: 8, maxBarThickness: 44 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        }
+      });
+
+      // Kehadiran terbaru
+      const latest = attendance.filter(a => a.check_in).sort((x, y) => y.date.localeCompare(x.date)).slice(0, 6);
+      document.getElementById('latestRows').innerHTML = latest.map(a => {
+        const cls = a.status === 'On Time' ? 'badge-ok' : a.status === 'Late' ? 'badge-bad' : 'badge-soft';
+        return '<tr><td class="px-6 py-3 text-body">' + nameOf(a.student_id) + '</td>' +
+          '<td class="px-4 py-3 text-body">' + fmtDate(a.date) + '</td>' +
+          '<td class="px-4 py-3 font-mono">' + a.check_in + (a.check_out ? ' - ' + a.check_out : '') + '</td>' +
+          '<td class="px-6 py-3"><span class="badge ' + cls + '">' + a.status + '</span></td></tr>';
+      }).join('') || '<tr><td colspan="4" class="px-6 py-6 text-center text-mute">Belum ada data.</td></tr>';
+
+      // Pengajuan pending
+      const pending = requests.filter(r => r.status === 'Pending');
+      document.getElementById('requestList').innerHTML = pending.length ? pending.map(r =>
+        '<li class="flex items-center justify-between gap-3 rounded-ctl bg-primary-50 px-4 py-3">' +
+        '<div><p class="font-semibold text-ink">' + r.type + ' · ' + nameOf(r.student_id) + '</p>' +
+        '<p class="text-xs text-mute">' + fmtDate(r.date) + ' · ' + r.reason + '</p></div>' +
+        '<button class="btn btn-outline text-xs" data-id="' + r.id + '">Tinjau</button></li>'
+      ).join('') : '<li class="text-mute">Tidak ada pengajuan menunggu.</li>';
+      document.querySelectorAll('#requestList button[data-id]').forEach(b =>
+        b.addEventListener('click', () => approveRequest(b.dataset.id)));
+
+      // Kelola shift
+      document.getElementById('fStudent').innerHTML = students.map(s => '<option value="' + s.id + '">' + s.name + '</option>').join('');
+      document.getElementById('fDate').value = todayISO();
+      document.getElementById('shiftRows').innerHTML = shifts
+        .filter(s => inThisWeek(s.date)).sort((a, b) => a.date.localeCompare(b.date))
+        .map(s => '<tr><td class="px-6 py-3 text-body">' + nameOf(s.student_id) + '</td>' +
+          '<td class="px-4 py-3 text-body">' + fmtDate(s.date) + '</td>' +
+          '<td class="px-4 py-3 text-body">' + s.unit + '</td>' +
+          '<td class="px-6 py-3 font-mono">' + s.start + ' - ' + s.end + '</td></tr>').join('')
+        || '<tr><td colspan="4" class="px-6 py-6 text-center text-mute">Belum ada shift minggu ini.</td></tr>';
+    }
+
+    async function approveRequest(id) {
+      await db.update('requests', id, { status: 'Approved', decided_by: user.id });
+      location.reload();
+    }
+
+    const form = document.getElementById('shiftForm');
+    document.getElementById('btnAddShift').addEventListener('click', () => { form.classList.remove('hidden'); document.getElementById('fStudent').focus(); });
+    document.getElementById('btnCancelShift').addEventListener('click', () => form.classList.add('hidden'));
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await db.insert('shifts', {
+        student_id: document.getElementById('fStudent').value,
+        date: document.getElementById('fDate').value,
+        start: document.getElementById('fStart').value,
+        end: document.getElementById('fEnd').value,
+        unit: document.getElementById('fUnit').value.trim(),
+        location: 'Kampus Unklab'
+      });
+      location.reload();
+    });
+
+    // Sidebar (layar kecil)
+    const sidebar = document.getElementById('sidebar'), backdrop = document.getElementById('backdrop'), btnMenu = document.getElementById('btnMenu');
+    function toggleMenu(open) {
+      sidebar.classList.toggle('max-lg:-translate-x-full', !open);
+      backdrop.classList.toggle('hidden', !open);
+      btnMenu.setAttribute('aria-expanded', String(open));
+    }
+    btnMenu.addEventListener('click', () => toggleMenu(sidebar.classList.contains('max-lg:-translate-x-full')));
+    backdrop.addEventListener('click', () => toggleMenu(false));
+    document.getElementById('btnLogout').addEventListener('click', () => { auth.logout(); location.replace('/pages/login/'); });
+  </script>
+</body>
+</html>

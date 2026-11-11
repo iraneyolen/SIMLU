@@ -1,0 +1,15 @@
+{
+  "program": "Sistem Informasi",
+  "semester": "1st Semester, Academic Year 2026/2027",
+  "courses": [
+    { "code": "SILE241", "name": "Entrepreneurship - Project Capstone", "name_id": "Proyek - Capstone Kewirausahaan", "section": "A", "teachers": ["Edson Yahuda Putra"], "credits": 3, "days": ["Selasa", "Kamis"], "start": "13:10", "end": "14:30", "room": "GK1-545 Lab FILKOM" },
+    { "code": "SID1232", "name": "Introduction to Database", "name_id": "Pengantar Basisdata", "section": "B", "teachers": ["Mandias, Green Ferry"], "credits": 3, "days": ["Senin", "Rabu"], "start": "14:40", "end": "16:00", "room": "GK1-438" },
+    { "code": "SIMB262", "name": "Management Information System", "name_id": "Sistem Informasi Manajemen", "section": "B", "teachers": ["Chrisanti, Ibrena"], "credits": 3, "days": ["Senin", "Rabu"], "start": "08:40", "end": "10:00", "room": "GK3-109" },
+    { "code": "UNKL221", "name": "Pre-Intermediate English I", "name_id": "Bahasa Inggris Pra Menengah I", "section": "E", "teachers": ["Salainti, Engelina"], "credits": 3, "days": ["Senin", "Rabu"], "start": "13:10", "end": "14:30", "room": "GK3-106" },
+    { "code": "SIMS283", "name": "Statistics and Probability", "name_id": "Statistik dan Probabilitas", "section": "B", "teachers": ["Tanasale, Amelia"], "credits": 3, "days": ["Senin", "Rabu"], "start": "16:10", "end": "17:30", "room": "GK1-327" },
+    { "code": "SIBP222", "name": "System Analysis and Design", "name_id": "Analisis dan Perancangan Sistem", "section": "D", "teachers": ["Najoan, Regi"], "credits": 3, "days": ["Selasa", "Kamis"], "start": "08:40", "end": "10:00", "room": "GK3-109" },
+    { "code": "UNKL211", "name": "The Principles of Christian Values", "name_id": "Prinsip-Prinsip Nilai Kristiani", "section": "K", "teachers": ["Sanjaya, Febry"], "credits": 2, "days": ["Jumat"], "start": "08:10", "end": "10:00", "room": "GK1-102" },
+    { "code": "SISW214", "name": "Web Design", "name_id": "Perancangan Web", "section": "C", "teachers": ["Tombeng, Marcel"], "credits": 3, "days": ["Selasa", "Kamis"], "start": "07:10", "end": "08:30", "room": "GA-228 Comp. Lab FILKOM" },
+    { "code": "GENERAL", "name": "Kuliah Umum", "name_id": "Kuliah Umum", "section": "", "teachers": [], "credits": 0, "days": ["Kamis"], "start": "10:10", "end": "11:30", "room": "Sesuai pengumuman" }
+  ]
+}

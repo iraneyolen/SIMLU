@@ -1,0 +1,10 @@
+# OS junk
+Thumbs.db
+.DS_Store
+
+# Tooling (tidak dipakai project, tapi jaga-jaga)
+node_modules/
+.opencode/
+
+# File kerja lokal
+*.log

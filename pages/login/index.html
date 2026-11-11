@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Masuk · SIMLU Unklab</title>
+
+  <script src="/assets/vendor/tailwindcss-browser.js"></script>
+  <script src="/assets/js/tailwind-boot.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&family=Zilla+Slab:wght@600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-page font-sans text-body">
+
+  <main class="flex min-h-screen">
+    <!-- Panel brand (desktop) -->
+    <aside class="flex w-2/5 flex-col justify-between bg-primary-900 p-10 max-lg:hidden">
+      <a href="/" class="flex items-center gap-2 font-semibold text-white">
+        <span class="flex h-9 w-9 items-center justify-center rounded-ctl bg-accent text-lg font-bold text-ink">S</span>
+        SIMLU · Unklab
+      </a>
+      <div>
+        <h1 class="font-display text-3xl font-semibold text-white">Sistem Informasi<br>Mahasiswa Labor</h1>
+        <p class="mt-3 max-w-sm text-sm text-primary-100">
+          Satu portal untuk jadwal kerja, absensi, dan pengajuan izin mahasiswa labor
+          Universitas Klabat.
+        </p>
+      </div>
+      <p class="text-xs text-primary-100">© 2026 Universitas Klabat · Group Project WDC</p>
+    </aside>
+
+    <!-- Form -->
+    <section class="flex flex-1 items-center justify-center px-6 py-10 max-md:px-4">
+      <div class="w-full max-w-md">
+        <a href="/" class="mb-8 inline-flex items-center gap-2 font-semibold text-primary-900 lg:hidden">
+          <span class="flex h-9 w-9 items-center justify-center rounded-ctl bg-primary text-lg font-bold text-white">S</span>
+          SIMLU · Unklab
+        </a>
+        <h2 class="text-2xl font-bold text-ink">Masuk</h2>
+        <p class="mt-1 text-sm text-mute">Masuk untuk mengakses dashboard-mu</p>
+
+        <form id="loginForm" class="mt-8 space-y-4" novalidate>
+          <div>
+            <label class="label" for="email">Email Unklab</label>
+            <input class="field" type="email" id="email" name="email" autocomplete="username"
+                   placeholder="nama@unklab.ac.id" required>
+            <p class="help">Format: nama@unklab.ac.id</p>
+            <p class="err hidden" id="errEmail"></p>
+          </div>
+          <div>
+            <label class="label" for="password">Password</label>
+            <input class="field" type="password" id="password" name="password" autocomplete="current-password" required>
+            <p class="err hidden" id="errPassword"></p>
+          </div>
+
+          <div id="formAlert" class="hidden rounded-ctl bg-red-50 px-4 py-3 text-sm text-bad" role="alert"></div>
+
+          <button class="btn btn-primary w-full text-base" id="btnLogin" type="submit">Masuk</button>
+        </form>
+
+        <p class="mt-6 text-center text-sm text-mute">
+          Belum punya akun? <a href="/pages/register/" class="font-semibold text-primary-ink hover:underline">Daftar</a>
+        </p>
+
+        <!-- Akun demo -->
+        <div class="card-soft mt-8 border-primary-100 bg-primary-50 p-4 text-sm">
+          <p class="font-semibold text-ink"><i class="bi bi-info-circle mr-1" aria-hidden="true"></i>Akun demo</p>
+          <ul class="mt-2 space-y-1 text-mute">
+            <li><button type="button" class="demo-user font-mono text-xs text-primary-ink hover:underline" data-email="admin@unklab.ac.id">admin@unklab.ac.id</button> · Admin</li>
+            <li><button type="button" class="demo-user font-mono text-xs text-primary-ink hover:underline" data-email="raolika@unklab.ac.id">raolika@unklab.ac.id</button> · Mahasiswa Labor</li>
+          </ul>
+          <p class="mt-2 text-xs text-mute">Password apa pun diterima pada mode demo.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/db.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    // Sudah login? Langsung ke dashboard sesuai role.
+    const existing = auth.currentUser();
+    if (existing) location.replace(existing.role === 'admin' ? '/pages/admin/' : '/pages/dashboard/');
+
+    const form = document.getElementById('loginForm');
+    const alertBox = document.getElementById('formAlert');
+    const btn = document.getElementById('btnLogin');
+
+    function showErr(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg; el.classList.remove('hidden');
+    }
+    function clearErrs() {
+      ['errEmail', 'errPassword'].forEach(id => document.getElementById(id).classList.add('hidden'));
+      alertBox.classList.add('hidden');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearErrs();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      let ok = true;
+      if (!email) { showErr('errEmail', 'Email wajib diisi'); ok = false; }
+      else if (!/^[^@\s]+@[^@\s]+$/.test(email)) { showErr('errEmail', 'Format email tidak valid, contoh: nama@unklab.ac.id'); ok = false; }
+      if (!password) { showErr('errPassword', 'Password wajib diisi'); ok = false; }
+      if (!ok) return;
+
+      btn.disabled = true; btn.textContent = 'Memproses…';
+      try {
+        const user = await auth.login(email, password);
+        location.replace(user.role === 'admin' ? '/pages/admin/' : '/pages/dashboard/');
+      } catch (err) {
+        alertBox.textContent = err.message; alertBox.classList.remove('hidden');
+        btn.disabled = false; btn.textContent = 'Masuk';
+      }
+    });
+
+    document.querySelectorAll('.demo-user').forEach(b =>
+      b.addEventListener('click', () => {
+        document.getElementById('email').value = b.dataset.email;
+        document.getElementById('password').focus();
+      }));
+  </script>
+</body>
+</html>
