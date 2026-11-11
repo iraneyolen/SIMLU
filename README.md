@@ -6,7 +6,7 @@ Dibangun sebagai project Perancangan Web (Web Design Course), Universitas Klabat
 **Status:** static-first demo (data `data/*.json` + `localStorage`) — siap migrasi ke Supabase.
 
 ## Tim
-Warikkie · Raolika · Mondong · Sahabir
+Pankey · Raolika · Mondong · Sahabir
 
 ## Menjalankan
 Butuh web server lokal (browser memblokir `fetch()` JSON pada `file://`):
