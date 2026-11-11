@@ -10,6 +10,12 @@
 (function (global) {
   'use strict';
 
+  // Root situs dideteksi dari URL script ini sendiri:
+  // localhost      → /js/db.js       → BASE '/'
+  // GitHub Pages   → /SIMLU/js/db.js → BASE '/SIMLU/'
+  const BASE = new URL(document.currentScript.src, location.origin).pathname
+    .replace(/js\/db\.js.*$/, '');
+
   const PREFIX = 'simlu:';
   const read = (k, fallback) => {
     try { const v = JSON.parse(localStorage.getItem(PREFIX + k)); return v === null || v === undefined ? fallback : v; }
@@ -20,7 +26,7 @@
   async function list(table) {
     const overlay = read(table, null);
     if (overlay !== null) return overlay;
-    const res = await fetch('/data/' + table + '.json');
+    const res = await fetch(BASE + 'data/' + table + '.json');
     if (!res.ok) throw new Error('Gagal memuat data: ' + table);
     return res.json();
   }
@@ -44,5 +50,5 @@
     write(table, rows.filter(r => r.id !== id));
   }
 
-  global.db = { list, insert, update, remove };
+  global.db = { list, insert, update, remove, BASE };
 })(window);

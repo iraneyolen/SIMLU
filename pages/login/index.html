@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Masuk · SIMLU Unklab</title>
+  <title>Masuk Â· SIMLU Unklab</title>
 
-  <script src="/assets/vendor/tailwindcss-browser.js"></script>
-  <script src="/assets/js/tailwind-boot.js"></script>
+  <script src="../../assets/vendor/tailwindcss-browser.js"></script>
+  <script src="../../assets/js/tailwind-boot.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&family=Zilla+Slab:wght@600&display=swap" rel="stylesheet">
@@ -16,9 +16,9 @@
   <main class="flex min-h-screen">
     <!-- Panel brand (desktop) -->
     <aside class="flex w-2/5 flex-col justify-between bg-primary-900 p-10 max-lg:hidden">
-      <a href="/" class="flex items-center gap-2 font-semibold text-white">
+      <a href="../../" class="flex items-center gap-2 font-semibold text-white">
         <span class="flex h-9 w-9 items-center justify-center rounded-ctl bg-accent text-lg font-bold text-ink">S</span>
-        SIMLU · Unklab
+        SIMLU Â· Unklab
       </a>
       <div>
         <h1 class="font-display text-3xl font-semibold text-white">Sistem Informasi<br>Mahasiswa Labor</h1>
@@ -27,15 +27,15 @@
           Universitas Klabat.
         </p>
       </div>
-      <p class="text-xs text-primary-100">© 2026 Universitas Klabat · Group Project WDC</p>
+      <p class="text-xs text-primary-100">Â© 2026 Universitas Klabat Â· Group Project WDC</p>
     </aside>
 
     <!-- Form -->
     <section class="flex flex-1 items-center justify-center px-6 py-10 max-md:px-4">
       <div class="w-full max-w-md">
-        <a href="/" class="mb-8 inline-flex items-center gap-2 font-semibold text-primary-900 lg:hidden">
+        <a href="../../" class="mb-8 inline-flex items-center gap-2 font-semibold text-primary-900 lg:hidden">
           <span class="flex h-9 w-9 items-center justify-center rounded-ctl bg-primary text-lg font-bold text-white">S</span>
-          SIMLU · Unklab
+          SIMLU Â· Unklab
         </a>
         <h2 class="text-2xl font-bold text-ink">Masuk</h2>
         <p class="mt-1 text-sm text-mute">Masuk untuk mengakses dashboard-mu</p>
@@ -60,15 +60,15 @@
         </form>
 
         <p class="mt-6 text-center text-sm text-mute">
-          Belum punya akun? <a href="/pages/register/" class="font-semibold text-primary-ink hover:underline">Daftar</a>
+          Belum punya akun? <a href="../register/" class="font-semibold text-primary-ink hover:underline">Daftar</a>
         </p>
 
         <!-- Akun demo -->
         <div class="card-soft mt-8 border-primary-100 bg-primary-50 p-4 text-sm">
           <p class="font-semibold text-ink"><i class="bi bi-info-circle mr-1" aria-hidden="true"></i>Akun demo</p>
           <ul class="mt-2 space-y-1 text-mute">
-            <li><button type="button" class="demo-user font-mono text-xs text-primary-ink hover:underline" data-email="admin@unklab.ac.id">admin@unklab.ac.id</button> · Admin</li>
-            <li><button type="button" class="demo-user font-mono text-xs text-primary-ink hover:underline" data-email="raolika@unklab.ac.id">raolika@unklab.ac.id</button> · Mahasiswa Labor</li>
+            <li><button type="button" class="demo-user font-mono text-xs text-primary-ink hover:underline" data-email="admin@unklab.ac.id">admin@unklab.ac.id</button> Â· Admin</li>
+            <li><button type="button" class="demo-user font-mono text-xs text-primary-ink hover:underline" data-email="raolika@unklab.ac.id">raolika@unklab.ac.id</button> Â· Mahasiswa Labor</li>
           </ul>
           <p class="mt-2 text-xs text-mute">Password apa pun diterima pada mode demo.</p>
         </div>
@@ -76,12 +76,12 @@
     </section>
   </main>
 
-  <script src="/js/db.js"></script>
-  <script src="/js/auth.js"></script>
+  <script src="../../js/db.js"></script>
+  <script src="../../js/auth.js"></script>
   <script>
     // Sudah login? Langsung ke dashboard sesuai role.
     const existing = auth.currentUser();
-    if (existing) location.replace(existing.role === 'admin' ? '/pages/admin/' : '/pages/dashboard/');
+    if (existing) location.replace(existing.role === 'admin' ? auth.root + 'pages/admin/' : auth.root + 'pages/dashboard/');
 
     const form = document.getElementById('loginForm');
     const alertBox = document.getElementById('formAlert');
@@ -107,10 +107,10 @@
       if (!password) { showErr('errPassword', 'Password wajib diisi'); ok = false; }
       if (!ok) return;
 
-      btn.disabled = true; btn.textContent = 'Memproses…';
+      btn.disabled = true; btn.textContent = 'Memprosesâ€¦';
       try {
         const user = await auth.login(email, password);
-        location.replace(user.role === 'admin' ? '/pages/admin/' : '/pages/dashboard/');
+        location.replace(user.role === 'admin' ? auth.root + 'pages/admin/' : auth.root + 'pages/dashboard/');
       } catch (err) {
         alertBox.textContent = err.message; alertBox.classList.remove('hidden');
         btn.disabled = false; btn.textContent = 'Masuk';

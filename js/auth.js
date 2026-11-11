@@ -8,6 +8,7 @@
   'use strict';
 
   const KEY = 'simlu:session';
+  const ROOT = (window.db && window.db.BASE) || '/';
 
   async function login(email, password) {
     if (!email) throw new Error('Email wajib diisi');
@@ -28,14 +29,13 @@
   // Guard: paksa login + role. redirect = lokasi halaman login relatif.
   function requireRole(role) {
     const user = currentUser();
-    const loginUrl = location.pathname.startsWith('/pages/') ? '/pages/login/' : '/pages/login/';
-    if (!user) { location.replace(loginUrl); return null; }
+    if (!user) { location.replace(ROOT + 'pages/login/'); return null; }
     if (role && user.role !== role) {
-      location.replace(user.role === 'admin' ? '/pages/admin/' : '/pages/dashboard/');
+      location.replace(ROOT + 'pages/' + (user.role === 'admin' ? 'admin/' : 'dashboard/'));
       return null;
     }
     return user;
   }
 
-  global.auth = { login, currentUser, logout, requireRole };
+  global.auth = { login, currentUser, logout, requireRole, root: ROOT };
 })(window);
