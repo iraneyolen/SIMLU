@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Jadwal Â· SIMLU Unklab</title>
+  <title>Jadwal · SIMLU Unklab</title>
 
   <script src="../../assets/vendor/tailwindcss-browser.js"></script>
   <script src="../../assets/js/tailwind-boot.js"></script>
@@ -16,7 +16,7 @@
   <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col bg-primary-900 px-4 py-6 transition-transform max-lg:-translate-x-full" aria-label="Menu utama">
     <a href="../../" class="flex items-center gap-2 px-2 font-semibold text-white">
       <span class="flex h-9 w-9 items-center justify-center rounded-ctl bg-accent text-lg font-bold text-ink">S</span>
-      SIMLU Â· Unklab
+      SIMLU · Unklab
     </a>
     <nav class="mt-8 flex flex-1 flex-col gap-1">
       <a href="../dashboard/" class="sidebar-item"><i class="bi bi-grid-1x2" aria-hidden="true"></i>Dashboard</a>
@@ -34,7 +34,7 @@
       <button id="btnMenu" class="rounded-ctl p-2 text-primary-900 hover:bg-primary-50" aria-label="Buka menu">
         <i class="bi bi-list text-2xl" aria-hidden="true"></i>
       </button>
-      <span class="font-semibold text-primary-900">SIMLU Â· Jadwal</span>
+      <span class="font-semibold text-primary-900">SIMLU · Jadwal</span>
     </div>
 
     <main class="mx-auto max-w-6xl px-6 py-8 max-md:px-4">
@@ -75,7 +75,7 @@
     const DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
 
     async function init() {
-      document.getElementById('meta').textContent = user.program + ' Â· Semester 1 Â· TA 2026/2027';
+      document.getElementById('meta').textContent = user.program + ' · Semester 1 · TA 2026/2027';
 
       const shifts = await db.list('shifts');
       const mine = shifts.filter(s => s.student_id === user.id).sort((a, b) => a.date.localeCompare(b.date));
@@ -87,14 +87,14 @@
       ).join('') : '<tr><td colspan="4" class="px-6 py-6 text-center text-mute">Belum ada shift terjadwal.</td></tr>';
 
       const data = await db.list('class-schedule');
-      document.getElementById('classMeta').textContent = 'Â· ' + data.semester;
+      document.getElementById('classMeta').textContent = '· ' + data.semester;
       document.getElementById('classGrid').innerHTML = DAYS.map(day => {
         const courses = data.courses.filter(c => c.days.includes(day));
         return '<div class="card-soft p-5">' +
           '<h3 class="text-sm font-bold uppercase tracking-wide text-primary-900">' + day + '</h3>' +
           (courses.length ? '<ul class="mt-3 space-y-3 text-sm">' + courses.map(c =>
-            '<li><p class="font-semibold text-ink">' + c.name + (c.section ? ' Â· ' + c.section : '') + '</p>' +
-            '<p class="mt-0.5 font-mono text-xs text-mute">' + c.start + ' - ' + c.end + ' Â· ' + c.room + '</p>' +
+            '<li><p class="font-semibold text-ink">' + c.name + (c.section ? ' · ' + c.section : '') + '</p>' +
+            '<p class="mt-0.5 font-mono text-xs text-mute">' + c.start + ' - ' + c.end + ' · ' + c.room + '</p>' +
             (c.teachers.length ? '<p class="text-xs text-mute">' + c.teachers.join(', ') + '</p>' : '') +
             '</li>').join('') + '</ul>'
           : '<p class="mt-3 text-sm text-mute">Tidak ada kelas</p>') +

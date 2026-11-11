@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard Â· SIMLU Unklab</title>
+  <title>Dashboard · SIMLU Unklab</title>
 
   <script src="../../assets/vendor/tailwindcss-browser.js"></script>
   <script src="../../assets/js/tailwind-boot.js"></script>
@@ -17,7 +17,7 @@
   <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col bg-primary-900 px-4 py-6 transition-transform max-lg:-translate-x-full" aria-label="Menu utama">
     <a href="../../" class="flex items-center gap-2 px-2 font-semibold text-white">
       <span class="flex h-9 w-9 items-center justify-center rounded-ctl bg-accent text-lg font-bold text-ink">S</span>
-      SIMLU Â· Unklab
+      SIMLU · Unklab
     </a>
     <nav class="mt-8 flex flex-1 flex-col gap-1">
       <a href="../dashboard/" class="sidebar-item active"><i class="bi bi-grid-1x2" aria-hidden="true"></i>Dashboard</a>
@@ -37,7 +37,7 @@
       <button id="btnMenu" class="rounded-ctl p-2 text-primary-900 hover:bg-primary-50" aria-label="Buka menu" aria-controls="sidebar" aria-expanded="false">
         <i class="bi bi-list text-2xl" aria-hidden="true"></i>
       </button>
-      <span class="font-semibold text-primary-900">SIMLU Â· Dashboard</span>
+      <span class="font-semibold text-primary-900">SIMLU · Dashboard</span>
     </div>
 
     <main class="mx-auto max-w-6xl px-6 py-8 max-md:px-4">
@@ -125,7 +125,7 @@
 
     async function init() {
       document.getElementById('greeting').textContent =
-        'Halo, ' + user.name + ' Â· ' + new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        'Halo, ' + user.name + ' · ' + new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
       renderClock(); setInterval(renderClock, 1000);
       await Promise.all([renderShift(), renderKPI(), renderAbsen(), renderClasses(), renderHistory()]);
@@ -146,7 +146,7 @@
         return;
       }
       document.getElementById('shiftTime').textContent = s.start + ' - ' + s.end;
-      document.getElementById('shiftUnit').textContent = s.unit + ' Â· ' + s.location;
+      document.getElementById('shiftUnit').textContent = s.unit + ' · ' + s.location;
     }
 
     async function renderKPI() {
@@ -212,7 +212,7 @@
       const list = data.courses.filter(c => c.days.includes(day));
       const ul = document.getElementById('classList');
       ul.innerHTML = list.length
-        ? list.map(c => '<li class="flex items-baseline justify-between gap-3"><span class="font-mono text-xs text-mute">' + c.start + '</span><span class="flex-1 text-body">' + c.name + (c.section ? ' Â· ' + c.section : '') + '</span><span class="text-xs text-mute">' + c.room + '</span></li>').join('')
+        ? list.map(c => '<li class="flex items-baseline justify-between gap-3"><span class="font-mono text-xs text-mute">' + c.start + '</span><span class="flex-1 text-body">' + c.name + (c.section ? ' · ' + c.section : '') + '</span><span class="text-xs text-mute">' + c.room + '</span></li>').join('')
         : '<li class="text-mute">Tidak ada kuliah hari ini.</li>';
     }
 

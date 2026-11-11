@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard Admin Â· SIMLU Unklab</title>
+  <title>Dashboard Admin · SIMLU Unklab</title>
 
   <script src="../../assets/vendor/tailwindcss-browser.js"></script>
   <script src="../../assets/js/tailwind-boot.js"></script>
@@ -17,7 +17,7 @@
   <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col bg-primary-900 px-4 py-6 transition-transform max-lg:-translate-x-full" aria-label="Menu utama">
     <a href="../../" class="flex items-center gap-2 px-2 font-semibold text-white">
       <span class="flex h-9 w-9 items-center justify-center rounded-ctl bg-accent text-lg font-bold text-ink">S</span>
-      SIMLU Â· Unklab
+      SIMLU · Unklab
     </a>
     <nav class="mt-8 flex flex-1 flex-col gap-1">
       <a href="#" class="sidebar-item active" data-nav=""><i class="bi bi-speedometer2" aria-hidden="true"></i>Statistik</a>
@@ -33,7 +33,7 @@
       <button id="btnMenu" class="rounded-ctl p-2 text-primary-900 hover:bg-primary-50" aria-label="Buka menu">
         <i class="bi bi-list text-2xl" aria-hidden="true"></i>
       </button>
-      <span class="font-semibold text-primary-900">SIMLU Â· Admin</span>
+      <span class="font-semibold text-primary-900">SIMLU · Admin</span>
     </div>
 
     <main class="mx-auto max-w-6xl px-6 py-8 max-md:px-4">
@@ -167,7 +167,7 @@
     }
 
     async function init() {
-      document.getElementById('greeting').textContent = 'Halo, ' + user.name + ' Â· ' + new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+      document.getElementById('greeting').textContent = 'Halo, ' + user.name + ' · ' + new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
       const [users, attendance, shifts, requests] = await Promise.all([
         db.list('users'), db.list('attendance'), db.list('shifts'), db.list('requests')
       ]);
@@ -214,8 +214,8 @@
       const pending = requests.filter(r => r.status === 'Pending');
       document.getElementById('requestList').innerHTML = pending.length ? pending.map(r =>
         '<li class="flex items-center justify-between gap-3 rounded-ctl bg-primary-50 px-4 py-3">' +
-        '<div><p class="font-semibold text-ink">' + r.type + ' Â· ' + nameOf(r.student_id) + '</p>' +
-        '<p class="text-xs text-mute">' + fmtDate(r.date) + ' Â· ' + r.reason + '</p></div>' +
+        '<div><p class="font-semibold text-ink">' + r.type + ' · ' + nameOf(r.student_id) + '</p>' +
+        '<p class="text-xs text-mute">' + fmtDate(r.date) + ' · ' + r.reason + '</p></div>' +
         '<button class="btn btn-outline text-xs" data-id="' + r.id + '">Tinjau</button></li>'
       ).join('') : '<li class="text-mute">Tidak ada pengajuan menunggu.</li>';
       document.querySelectorAll('#requestList button[data-id]').forEach(b =>
