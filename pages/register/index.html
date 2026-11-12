@@ -39,23 +39,23 @@
 
         <form id="regForm" class="mt-8 space-y-4" novalidate>
           <div>
-            <label class="label" for="name">Nama Lengkap</label>
+            <label class="label" for="name">Nama Lengkap <span class="text-bad" aria-hidden="true">*</span></label>
             <input class="field" type="text" id="name" name="name" autocomplete="name" placeholder="Sesuai KTM" required>
             <p class="err hidden" id="errName"></p>
           </div>
           <div>
-            <label class="label" for="nim">NIM</label>
+            <label class="label" for="nim">NIM <span class="text-bad" aria-hidden="true">*</span></label>
             <input class="field" type="text" id="nim" name="nim" inputmode="numeric" placeholder="Contoh: 230102005" required>
             <p class="help">NIM Unklab tanpa titik</p>
             <p class="err hidden" id="errNim"></p>
           </div>
           <div>
-            <label class="label" for="email">Email Unklab</label>
+            <label class="label" for="email">Email Unklab <span class="text-bad" aria-hidden="true">*</span></label>
             <input class="field" type="email" id="email" name="email" autocomplete="email" placeholder="nama@unklab.ac.id" required>
             <p class="err hidden" id="errEmail"></p>
           </div>
           <div>
-            <label class="label" for="program">Program Studi</label>
+            <label class="label" for="program">Program Studi <span class="text-bad" aria-hidden="true">*</span></label>
             <select class="field" id="program" name="program" required>
               <option value="">Pilih program studi</option>
               <option>Sistem Informasi</option>
@@ -66,7 +66,7 @@
             <p class="err hidden" id="errProgram"></p>
           </div>
           <div>
-            <label class="label" for="password">Password</label>
+            <label class="label" for="password">Password <span class="text-bad" aria-hidden="true">*</span></label>
             <input class="field" type="password" id="password" name="password" autocomplete="new-password" required>
             <p class="help">Minimal 6 karakter</p>
             <p class="err hidden" id="errPassword"></p>
@@ -74,6 +74,7 @@
 
           <div id="formAlert" class="hidden rounded-ctl bg-bad-50 px-4 py-3 text-sm text-bad" role="alert"></div>
 
+          <p class="help"><span class="text-bad" aria-hidden="true">*</span> Wajib diisi</p>
           <button class="btn btn-primary w-full text-base" id="btnReg" type="submit">Daftar</button>
         </form>
 

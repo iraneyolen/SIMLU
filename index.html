@@ -28,52 +28,77 @@
     </div>
   </nav>
 
-  <!-- Hero -->
+  <!-- Hero.
+       Hierarki (alasan): satu fokus = CTA daftar; judul membawa nama sistem
+       sendiri, tanpa label kategori di atasnya. -->
   <header class="bg-primary-900">
-    <div class="mx-auto max-w-6xl px-6 py-20 text-center max-md:px-4 max-md:py-14">
-      <p class="text-sm font-semibold uppercase tracking-widest text-accent">Universitas Klabat</p>
-      <h1 class="mx-auto mt-3 max-w-3xl font-display text-4xl font-semibold text-white max-md:text-3xl">
-        SIMLU · Sistem Informasi Mahasiswa Labor
-      </h1>
-      <p class="mx-auto mt-4 max-w-xl text-lg text-primary-100 max-md:text-base">
-        Daftar online, kelola jadwal kerja dan kuliah, absensi, dan pantau kinerjamu,
-        semua dalam satu tempat.
-      </p>
-      <div class="mt-8 flex items-center justify-center gap-4 max-md:flex-col">
-        <a href="pages/register/" class="btn btn-accent px-6 text-base">Daftar Mahasiswa Labor</a>
-        <a href="pages/login/" class="btn btn-outline border-white bg-transparent text-white hover:bg-white/10">Masuk</a>
+    <div class="mx-auto max-w-6xl px-6 py-20 max-md:px-4 max-md:py-14">
+      <div class="max-w-2xl">
+        <h1 class="font-display text-4xl font-semibold text-white max-md:text-3xl">
+          SIMLU · Sistem Informasi Mahasiswa Labor
+        </h1>
+        <p class="mt-4 text-lg text-primary-100 max-md:text-base">
+          Jadwal shift dan jadwal kuliah dalam satu dashboard, absensi check-in/check-out
+          online, dan pengajuan izin tanpa formulir kertas.
+        </p>
+        <div class="mt-8 flex items-center gap-4 max-md:flex-col max-md:items-stretch">
+          <a href="pages/register/" class="btn btn-accent px-6 text-base">Daftar Mahasiswa Labor</a>
+          <a href="pages/login/" class="btn btn-outline border-white bg-transparent text-white hover:bg-white/10">Masuk</a>
+        </div>
+        <p class="mt-5 text-xs text-primary-100">Versi demo statis: data tersimpan di browser, akan dimigrasi ke basis data nyata.</p>
       </div>
     </div>
   </header>
 
-  <!-- 3 fitur utama -->
+  <!-- Fitur.
+       Alasan komposisi (R-14): absensi adalah inti sistem, jadi ia tampil sendiri
+       sebagai blok utama; tiga kemampuan lain cukup sebagai daftar, bukan kartu
+       kembar. Hierarki disengaja, bukan grid seragam. -->
   <main class="mx-auto max-w-6xl px-6 py-16 max-md:px-4">
-    <div class="grid grid-cols-3 gap-6 max-lg:grid-cols-1">
-      <section class="card-soft p-6">
-        <span class="flex h-11 w-11 items-center justify-center rounded-full bg-primary-100">
-          <i class="bi bi-calendar-week text-xl text-primary" aria-hidden="true"></i>
+    <section class="card-soft grid grid-cols-5 gap-0 overflow-hidden max-lg:grid-cols-1">
+      <div class="col-span-2 bg-primary-50 p-8 max-lg:col-span-1 max-md:p-6">
+        <span class="flex h-11 w-11 items-center justify-center rounded-ctl bg-primary text-white">
+          <i class="bi bi-clock-history text-xl" aria-hidden="true"></i>
         </span>
-        <h2 class="mt-3 text-lg font-semibold text-ink">Jadwal Terpusat</h2>
-        <p class="mt-1 text-sm text-mute">Jadwal kerja shift dan jadwal kuliahmu tampil di satu dashboard, tanpa tukar aplikasi.</p>
-      </section>
-      <section class="card-soft p-6">
-        <span class="flex h-11 w-11 items-center justify-center rounded-full bg-primary-100">
-          <i class="bi bi-clock-history text-xl text-primary" aria-hidden="true"></i>
-        </span>
-        <h2 class="mt-3 text-lg font-semibold text-ink">Absensi Online</h2>
-        <p class="mt-1 text-sm text-mute">Check-in dan check-out langsung dari web. Riwayat kerjamu tercatat otomatis.</p>
-      </section>
-      <section class="card-soft p-6">
-        <span class="flex h-11 w-11 items-center justify-center rounded-full bg-primary-100">
-          <i class="bi bi-graph-up text-xl text-primary" aria-hidden="true"></i>
-        </span>
-        <h2 class="mt-3 text-lg font-semibold text-ink">Statistik Transparan</h2>
-        <p class="mt-1 text-sm text-mute">Admin memantau kehadiran seluruh mahasiswa labor lewat dashboard statistik.</p>
-      </section>
-    </div>
+        <h2 class="mt-4 text-lg font-semibold text-ink">Absensi Online</h2>
+        <p class="mt-2 text-sm text-body">
+          Check-in dan check-out langsung dari dashboard. Status, keterlambatan,
+          dan total jam tercatat otomatis di riwayatmu.
+        </p>
+      </div>
+      <ul class="col-span-3 divide-y divide-line max-lg:col-span-1">
+        <li class="flex items-start gap-4 p-6 max-md:p-5">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-ctl bg-primary-100 text-primary">
+            <i class="bi bi-calendar-week" aria-hidden="true"></i>
+          </span>
+          <div>
+            <h3 class="text-base font-semibold text-ink">Jadwal terpusat</h3>
+            <p class="mt-1 text-sm text-mute">Shift kerja dan jadwal kuliah berdampingan, tanpa buka dua aplikasi.</p>
+          </div>
+        </li>
+        <li class="flex items-start gap-4 p-6 max-md:p-5">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-ctl bg-primary-100 text-primary">
+            <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+          </span>
+          <div>
+            <h3 class="text-base font-semibold text-ink">Pengajuan izin &amp; tukar shift</h3>
+            <p class="mt-1 text-sm text-mute">Kirim pengajuan, pantau statusnya sampai admin memutuskan.</p>
+          </div>
+        </li>
+        <li class="flex items-start gap-4 p-6 max-md:p-5">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-ctl bg-primary-100 text-primary">
+            <i class="bi bi-graph-up" aria-hidden="true"></i>
+          </span>
+          <div>
+            <h3 class="text-base font-semibold text-ink">Statistik untuk admin</h3>
+            <p class="mt-1 text-sm text-mute">Kehadiran, keterlambatan, dan jam kerja seluruh mahasiswa labor dalam satu dashboard.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
 
     <!-- Info demo -->
-    <section class="card-soft mt-10 flex items-start gap-4 border-primary-100 bg-primary-50 p-5 max-md:flex-col">
+    <section class="mt-10 flex items-start gap-4 rounded-ctl border border-primary-100 bg-primary-50 p-5 max-md:flex-col">
       <i class="bi bi-info-circle text-xl text-primary" aria-hidden="true"></i>
       <p class="text-sm text-body">
         <strong class="text-ink">Catatan demo:</strong> versi ini masih statis. Data tersimpan lokal di browser
@@ -83,7 +108,7 @@
   </main>
 
   <footer class="bg-primary-900 py-6 text-center text-primary-100">
-    <small>© 2026 Universitas Klabat · Group Project WDC</small>
+    <small>© 2026 Universitas Klabat · Group Project WDC · Pankey · Raolika · Mondong · Sahabir</small>
   </footer>
 
 </body>

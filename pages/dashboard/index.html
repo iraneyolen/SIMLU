@@ -24,6 +24,7 @@
       <a href="../schedule/" class="sidebar-item"><i class="bi bi-calendar-week" aria-hidden="true"></i>Jadwal</a>
       <a href="../history/" class="sidebar-item"><i class="bi bi-clock-history" aria-hidden="true"></i>Riwayat</a>
       <a href="../requests/" class="sidebar-item"><i class="bi bi-arrow-left-right" aria-hidden="true"></i>Pengajuan</a>
+      <a href="../notifications/" class="sidebar-item"><i class="bi bi-bell" aria-hidden="true"></i>Notifikasi</a>
       <a href="../profile/" class="sidebar-item"><i class="bi bi-person-circle" aria-hidden="true"></i>Profil</a>
     </nav>
     <button id="btnLogout" class="sidebar-item w-full text-left"><i class="bi bi-box-arrow-left" aria-hidden="true"></i>Keluar</button>
@@ -128,7 +129,8 @@
         'Halo, ' + user.name + ' · ' + new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
       renderClock(); setInterval(renderClock, 1000);
-      await Promise.all([renderShift(), renderKPI(), renderAbsen(), renderClasses(), renderHistory()]);
+      const att = await db.list('attendance');
+      await Promise.all([renderShift(), renderKPI(att), renderAbsen(att), renderClasses(), renderHistory(att)]);
 
       document.getElementById('btnCheckIn').addEventListener('click', () => checkIn().catch(db.fail));
       document.getElementById('btnCheckOut').addEventListener('click', () => checkOut().catch(db.fail));
@@ -149,8 +151,8 @@
       document.getElementById('shiftUnit').textContent = s.unit + ' · ' + s.location;
     }
 
-    async function renderKPI() {
-      const rows = (await db.list('attendance')).filter(a => a.student_id === user.id && inThisWeek(a.date));
+    async function renderKPI(attendance) {
+      const rows = attendance.filter(a => a.student_id === user.id && inThisWeek(a.date));
       let minutes = 0, hadir = 0, telat = 0;
       for (const a of rows) {
         if (a.check_in && a.check_out) {
@@ -171,8 +173,8 @@
       return d >= monday;
     }
 
-    async function renderAbsen() {
-      const rows = (await db.list('attendance')).filter(a => a.student_id === user.id && a.date === todayISO());
+    async function renderAbsen(attendance) {
+      const rows = attendance.filter(a => a.student_id === user.id && a.date === todayISO());
       const a = rows[rows.length - 1];
       const info = document.getElementById('absenInfo');
       const inBtn = document.getElementById('btnCheckIn'), outBtn = document.getElementById('btnCheckOut');
@@ -195,7 +197,8 @@
       const s = shifts.find(x => x.student_id === user.id && x.date === todayISO());
       const late = s ? Math.max(0, hm(t) - hm(s.start)) : 0;
       await db.insert('attendance', { student_id: user.id, date: todayISO(), check_in: t, check_out: null, status: late > 0 ? 'Late' : 'On Time', minutes_late: late });
-      await Promise.all([renderKPI(), renderAbsen(), renderHistory()]);
+      const att = await db.list('attendance');
+      await Promise.all([renderKPI(att), renderAbsen(att), renderHistory(att)]);
     }
 
     async function checkOut() {
@@ -203,7 +206,8 @@
       const a = rows[rows.length - 1];
       if (!a || a.check_out) return;
       await db.update('attendance', a.id, { check_out: nowHM() });
-      await Promise.all([renderKPI(), renderAbsen(), renderHistory()]);
+      const att = await db.list('attendance');
+      await Promise.all([renderKPI(att), renderAbsen(att), renderHistory(att)]);
     }
 
     async function renderClasses() {
@@ -216,8 +220,8 @@
         : '<li class="text-mute">Tidak ada kuliah hari ini.</li>';
     }
 
-    async function renderHistory() {
-      const rows = (await db.list('attendance')).filter(a => a.student_id === user.id).sort((x, y) => y.date.localeCompare(x.date)).slice(0, 5);
+    async function renderHistory(attendance) {
+      const rows = attendance.filter(a => a.student_id === user.id).sort((x, y) => y.date.localeCompare(x.date)).slice(0, 5);
       document.getElementById('historyRows').innerHTML = rows.map(a => {
         const cls = a.status === 'On Time' ? 'badge-ok' : a.status === 'Late' ? 'badge-bad' : 'badge-soft';
         return '<tr><td class="px-6 py-3 text-body">' + fmtDate(a.date) + '</td>' +
