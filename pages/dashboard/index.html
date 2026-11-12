@@ -76,7 +76,7 @@
       <div class="mt-6 grid grid-cols-5 gap-6 max-lg:grid-cols-1">
         <!-- Absensi -->
         <section class="card-soft col-span-3 p-6 max-lg:col-span-1">
-          <h2 class="text-base font-semibold text-ink">Absensi hari ini</h2>
+          <h2 class="text-lg font-semibold text-ink">Absensi hari ini</h2>
           <p class="mt-1 text-sm text-mute" id="absenInfo">Belum ada check-in tercatat.</p>
           <div class="mt-4 flex gap-3 max-md:flex-col">
             <button class="btn btn-primary" id="btnCheckIn"><i class="bi bi-play-circle" aria-hidden="true"></i>Check-In</button>
@@ -85,7 +85,7 @@
         </section>
         <!-- Kuliah hari ini -->
         <section class="card-soft col-span-2 p-6 max-lg:col-span-1">
-          <h2 class="text-base font-semibold text-ink">Kuliah hari ini</h2>
+          <h2 class="text-lg font-semibold text-ink">Kuliah hari ini</h2>
           <ul class="mt-3 space-y-3 text-sm" id="classList">
             <li class="text-mute">Memuatâ€¦</li>
           </ul>
@@ -94,8 +94,8 @@
 
       <!-- Riwayat terakhir -->
       <section class="card-soft mt-6 overflow-hidden">
-        <h2 class="px-6 pt-5 text-base font-semibold text-ink">5 kehadiran terakhir</h2>
-        <table class="mt-3 w-full text-sm">
+        <h2 class="px-6 pt-5 text-lg font-semibold text-ink">5 kehadiran terakhir</h2>
+        <div class="mt-3 overflow-x-auto"><table class="w-full text-sm min-w-[600px]">
           <thead>
             <tr class="bg-primary-900 text-left text-white">
               <th class="px-6 py-3 font-medium">Tanggal</th>
@@ -105,7 +105,7 @@
             </tr>
           </thead>
           <tbody id="historyRows" class="divide-y divide-line"></tbody>
-        </table>
+        </table></div>
       </section>
     </main>
   </div>
@@ -114,13 +114,13 @@
   <script src="../../js/auth.js"></script>
   <script>
     const user = auth.requireRole('student');
-    if (user) init();
+    if (user) init().catch(db.fail);
 
     function fmtDate(iso) {
       const d = new Date(iso + 'T00:00:00');
       return d.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' });
     }
-    function todayISO() { return new Date().toISOString().slice(0, 10); }
+    function todayISO() { return db.todayISO(); }
     function nowHM() { const d = new Date(); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
 
     async function init() {
@@ -130,8 +130,8 @@
       renderClock(); setInterval(renderClock, 1000);
       await Promise.all([renderShift(), renderKPI(), renderAbsen(), renderClasses(), renderHistory()]);
 
-      document.getElementById('btnCheckIn').addEventListener('click', checkIn);
-      document.getElementById('btnCheckOut').addEventListener('click', checkOut);
+      document.getElementById('btnCheckIn').addEventListener('click', () => checkIn().catch(db.fail));
+      document.getElementById('btnCheckOut').addEventListener('click', () => checkOut().catch(db.fail));
     }
 
     function renderClock() { document.getElementById('clock').textContent = nowHM() + ' WITA'; }

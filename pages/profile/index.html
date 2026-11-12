@@ -91,7 +91,7 @@
   <script src="../../js/auth.js"></script>
   <script>
     const user = auth.requireRole('student');
-    if (user) init();
+    if (user) init().catch(db.fail);
 
     function hm(t) { const [h, m] = t.split(':').map(Number); return h * 60 + m; }
 

@@ -50,5 +50,28 @@
     write(table, rows.filter(r => r.id !== id));
   }
 
-  global.db = { list, insert, update, remove, BASE };
+  // Tanggal hari ini dalam waktu lokal (bukan UTC — WITA bisa berbeda hari
+  // untuk kejadian sebelum jam 08:00 pagi).
+  function todayISO() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  // Banner error global. Halaman memakainya lewat .catch(db.fail) sehingga
+  // kegagalan fetch tidak lagi membuat UI macet di "Memuat…" tanpa pesan.
+  function fail(err) {
+    if (err) console.error(err);
+    let bar = document.getElementById('simlu-error');
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'simlu-error';
+      bar.setAttribute('role', 'alert');
+      bar.style.cssText = 'position:fixed;left:0;right:0;top:0;z-index:60;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1rem;padding:.75rem 1rem;font:500 14px/1.4 var(--font-sans);background:var(--color-bad,#B91C1C);color:#fff';
+      bar.innerHTML = '<span>Gagal memuat data. Periksa koneksi, lalu muat ulang halaman.</span>' +
+        '<button onclick="location.reload()" style="border:0;border-radius:8px;padding:.375rem .875rem;font-weight:600;cursor:pointer;background:#fff;color:var(--color-bad,#B91C1C)">Muat ulang</button>';
+      document.body.appendChild(bar);
+    }
+  }
+
+  global.db = { list, insert, update, remove, todayISO, fail, BASE };
 })(window);

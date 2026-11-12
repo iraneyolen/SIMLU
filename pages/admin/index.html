@@ -62,7 +62,7 @@
 
       <!-- Grafik -->
       <section class="card-soft mt-6 p-6 scroll-mt-24" id="chartSection">
-        <h2 class="text-base font-semibold text-ink">Kehadiran 7 hari terakhir</h2>
+        <h2 class="text-lg font-semibold text-ink">Kehadiran 7 hari terakhir</h2>
         <p class="text-sm text-mute">Jumlah mahasiswa yang check-in per hari</p>
         <div class="mt-4 h-64 max-md:h-56"><canvas id="chartAttendance"></canvas></div>
       </section>
@@ -70,8 +70,8 @@
       <div class="mt-6 grid grid-cols-5 gap-6 max-lg:grid-cols-1">
         <!-- Kehadiran terbaru -->
         <section class="card-soft col-span-3 overflow-hidden max-lg:col-span-1">
-          <h2 class="px-6 pt-5 text-base font-semibold text-ink">Kehadiran terbaru</h2>
-          <table class="mt-3 w-full text-sm">
+          <h2 class="px-6 pt-5 text-lg font-semibold text-ink">Kehadiran terbaru</h2>
+          <div class="mt-3 overflow-x-auto"><table class="w-full text-sm min-w-[600px]">
             <thead>
               <tr class="bg-primary-900 text-left text-white">
                 <th class="px-6 py-3 font-medium">Nama</th>
@@ -81,12 +81,12 @@
               </tr>
             </thead>
             <tbody id="latestRows" class="divide-y divide-line"></tbody>
-          </table>
+          </table></div>
         </section>
 
         <!-- Pengajuan -->
         <section class="card-soft col-span-2 p-6 max-lg:col-span-1 scroll-mt-24" id="pengajuan">
-          <h2 class="text-base font-semibold text-ink">Pengajuan menunggu</h2>
+          <h2 class="text-lg font-semibold text-ink">Pengajuan menunggu</h2>
           <ul class="mt-3 space-y-3 text-sm" id="requestList">
             <li class="text-mute">Memuatâ€¦</li>
           </ul>
@@ -96,7 +96,7 @@
       <!-- Kelola shift -->
       <section class="card-soft mt-6 overflow-hidden scroll-mt-24" id="kelola">
         <div class="flex items-center justify-between px-6 pt-5 max-md:flex-col max-md:items-start max-md:gap-2">
-          <h2 class="text-base font-semibold text-ink">Shift minggu ini</h2>
+          <h2 class="text-lg font-semibold text-ink">Shift minggu ini</h2>
           <button class="btn btn-primary text-sm" id="btnAddShift"><i class="bi bi-plus-lg" aria-hidden="true"></i>Tambah Shift</button>
         </div>
         <!-- Form tambah (tersembunyi sampai tombol ditekan) -->
@@ -119,7 +119,7 @@
           <button class="btn btn-primary text-sm" type="submit">Simpan</button>
           <button class="btn btn-outline text-sm" type="button" id="btnCancelShift">Batalkan</button>
         </form>
-        <table class="mt-3 w-full text-sm">
+        <div class="mt-3 overflow-x-auto"><table class="w-full text-sm min-w-[600px]">
           <thead>
             <tr class="bg-primary-900 text-left text-white">
               <th class="px-6 py-3 font-medium">Nama</th>
@@ -129,7 +129,7 @@
             </tr>
           </thead>
           <tbody id="shiftRows" class="divide-y divide-line"></tbody>
-        </table>
+        </table></div>
       </section>
     </main>
   </div>
@@ -138,7 +138,7 @@
   <script src="../../js/auth.js"></script>
   <script>
     const user = auth.requireRole('admin');
-    if (user) window.addEventListener('load', init);
+    if (user) window.addEventListener('load', () => init().catch(db.fail));
 
     // Tanda aktif sidebar mengikuti hash (Statistik / Kelola Shift / Pengajuan)
     function syncNav() {
@@ -153,7 +153,7 @@
     const UNITS = 'Kantin, Lab FILKOM, Perpustakaan, Kantor'.split(', ');
     function fmtDate(iso) { return new Date(iso + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' }); }
     function hm(t) { const [h, m] = t.split(':').map(Number); return h * 60 + m; }
-    function todayISO() { return new Date().toISOString().slice(0, 10); }
+    function todayISO() { return db.todayISO(); }
     function inThisWeek(iso) {
       const d = new Date(iso + 'T00:00:00'), now = new Date();
       const day = (now.getDay() + 6) % 7;
@@ -186,12 +186,13 @@
       // Grafik
       const days = last7();
       const counts = days.map(d => attendance.filter(a => a.date === d && a.check_in).length);
+      const primaryColor = (getComputedStyle(document.documentElement).getPropertyValue('--color-primary') || '#1B76BC').trim() || '#1B76BC';
       const ctx = document.getElementById('chartAttendance').getContext('2d');
       new Chart(ctx, {
         type: 'bar',
         data: {
           labels: days.map(d => fmtDate(d)),
-          datasets: [{ label: 'Kehadiran', data: counts, backgroundColor: '#1B76BC', borderRadius: 8, maxBarThickness: 44 }]
+          datasets: [{ label: 'Kehadiran', data: counts, backgroundColor: primaryColor, borderRadius: 8, maxBarThickness: 44 }]
         },
         options: {
           responsive: true, maintainAspectRatio: false,
@@ -199,6 +200,9 @@
           scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
         }
       });
+      const chartCanvas = document.getElementById('chartAttendance');
+      chartCanvas.setAttribute('role', 'img');
+      chartCanvas.setAttribute('aria-label', 'Diagram batang kehadiran 7 hari terakhir: ' + days.map((d, i) => fmtDate(d) + ' ' + counts[i] + ' orang').join(', '));
 
       // Kehadiran terbaru
       const latest = attendance.filter(a => a.check_in).sort((x, y) => y.date.localeCompare(x.date)).slice(0, 6);
@@ -219,7 +223,7 @@
         '<button class="btn btn-outline text-xs" data-id="' + r.id + '">Tinjau</button></li>'
       ).join('') : '<li class="text-mute">Tidak ada pengajuan menunggu.</li>';
       document.querySelectorAll('#requestList button[data-id]').forEach(b =>
-        b.addEventListener('click', () => approveRequest(b.dataset.id)));
+        b.addEventListener('click', () => approveRequest(b.dataset.id).catch(db.fail)));
 
       // Kelola shift
       document.getElementById('fStudent').innerHTML = students.map(s => '<option value="' + s.id + '">' + s.name + '</option>').join('');
@@ -243,7 +247,8 @@
     document.getElementById('btnCancelShift').addEventListener('click', () => form.classList.add('hidden'));
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      await db.insert('shifts', {
+      try {
+        await db.insert('shifts', {
         student_id: document.getElementById('fStudent').value,
         date: document.getElementById('fDate').value,
         start: document.getElementById('fStart').value,
@@ -251,7 +256,8 @@
         unit: document.getElementById('fUnit').value.trim(),
         location: 'Kampus Unklab'
       });
-      location.reload();
+        location.reload();
+      } catch (err) { db.fail(err); }
     });
 
     // Sidebar (layar kecil)
