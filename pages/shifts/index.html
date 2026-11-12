@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kelola Shift | SI Mahasiswa Labor Unklab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet">
+  <script src="../../assets/vendor/tailwindcss-browser.js"></script>
+  <script src="../../js/boot.js"></script>
+</head>
+<body data-role="auto" data-page="shifts" data-title="Kelola Shift" data-subtitle="Atur jadwal kerja mahasiswa per minggu">
+  <main id="main">
+    <div class="flex flex-wrap items-end gap-3">
+      <div><span class="label">Minggu</span><span class="block min-h-10 py-2 font-semibold tabular" id="weekLabel"></span></div>
+      <div class="hidden w-full sm:w-48" id="unitFilterBox"><label class="label" for="unitFilter">Unit</label><select class="input" id="unitFilter"><option>Semua unit</option><option>Perpustakaan</option><option>Kafetaria</option><option>IT Support</option><option>Asrama</option><option>Kebersihan Kampus</option><option>Administrasi</option></select></div>
+      <div class="flex gap-2 sm:ml-auto"><button class="btn btn-primary" type="button" id="addBtn"><i class="ph ph-plus" aria-hidden="true"></i>Tambah shift</button></div>
+    </div>
+    <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-ink-2">
+      <span class="inline-flex items-center gap-2"><span class="size-3 rounded-sm bg-info-soft ring-1 ring-info"></span>Shift</span>
+      <span class="inline-flex items-center gap-2"><span class="size-3 rounded-sm bg-bad-soft ring-1 ring-bad"></span>Bentrok kuliah</span>
+      <span class="inline-flex items-center gap-2"><span class="size-3 rounded-sm bg-warn-soft ring-1 ring-warn"></span>Izin disetujui</span>
+      <span>Klik shift untuk ubah atau hapus. Batas jam per minggu mengikuti aturan unit.</span>
+    </div>
+    <div id="tableBox"></div>
+  </main>
+
+  <script src="../../js/demo-data.js"></script>
+  <script src="../../js/store.js"></script>
+  <script src="../../js/ui.js"></script>
+  <script src="../../js/layout.js"></script>
+  <script src="../../js/pages/shifts.js"></script>
+</body>
+</html>

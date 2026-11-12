@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pengajuan | SI Mahasiswa Labor Unklab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet">
+  <script src="../../assets/vendor/tailwindcss-browser.js"></script>
+  <script src="../../js/boot.js"></script>
+</head>
+<body data-role="student" data-page="request" data-title="Pengajuan" data-subtitle="Izin tidak masuk atau tukar shift">
+  <main id="main">
+    <div class="grid gap-6 lg:grid-cols-[1fr_1.3fr]">
+      <section class="panel flex flex-col gap-4 p-5" aria-labelledby="newTitle">
+        <h2 id="newTitle">Pengajuan baru</h2>
+        <div class="seg self-start" id="typeTabs" role="group" aria-label="Jenis pengajuan">
+          <button type="button" data-value="swap" aria-pressed="true">Tukar shift</button>
+          <button type="button" data-value="leave" aria-pressed="false">Izin</button>
+        </div>
+        <form id="requestForm" class="flex flex-col gap-4" novalidate>
+          <div><label class="label" for="shiftSelect" id="shiftLabel">Shift yang ditukar *</label>
+            <select class="input" id="shiftSelect" required></select><p class="error-msg">Pilih shift.</p></div>
+          <div id="replacementGroup"><label class="label" for="replacementSelect">Mahasiswa pengganti *</label>
+            <select class="input" id="replacementSelect" required><option value="">Pilih dari unit yang sama</option></select>
+            <p class="error-msg">Pilih mahasiswa pengganti.</p></div>
+          <div><label class="label" for="reasonText">Alasan *</label>
+            <textarea class="input" id="reasonText" rows="3" placeholder="Contoh: bentrok dengan kuliah Statistika 15:00" required></textarea>
+            <p class="error-msg">Tulis alasan pengajuan.</p></div>
+          <p class="m-0 rounded-lg bg-sunken px-4 py-3 text-xs text-ink-2">Koordinator yang menyetujui. Untuk tukar shift, pengganti melihat shift baru di jadwalnya setelah disetujui.</p>
+          <button class="btn btn-primary" type="submit">Kirim pengajuan</button>
+        </form>
+      </section>
+      <section class="flex flex-col gap-3" aria-labelledby="histTitle">
+        <h2 id="histTitle">Riwayat pengajuan</h2>
+        <div id="tableBox"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../../js/demo-data.js"></script>
+  <script src="../../js/store.js"></script>
+  <script src="../../js/ui.js"></script>
+  <script src="../../js/layout.js"></script>
+  <script src="../../js/pages/request.js"></script>
+</body>
+</html>

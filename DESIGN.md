@@ -1,182 +1,64 @@
----
-name: SIMLU
-description: Sistem Informasi Mahasiswa Labor Universitas Klabat — biru-kuning institusional yang tenang dan padat data.
-colors:
-  primary: "#1B76BC"
-  primary-deep: "#0F4C81"
-  primary-tint: "#E3F0FA"
-  primary-wash: "#F2F8FD"
-  primary-ink: "#1667A3"
-  accent: "#FFC20E"
-  ink: "#2D2D2D"
-  body-text: "#444444"
-  mute: "#6A6D73"
-  page: "#FAFBFC"
-  line: "#E5E7EB"
-  ok: "#15803D"
-  bad: "#B91C1C"
-  bad-tint: "#FEF2F2"
-  warn: "#B45309"
-typography:
-  display:
-    fontFamily: "Zilla Slab, Georgia, serif"
-    fontWeight: 600
-  body:
-    fontFamily: "Roboto, system-ui, sans-serif"
-    fontSize: "0.875rem"
-    fontWeight: 400
-  label:
-    fontFamily: "Roboto, system-ui, sans-serif"
-    fontSize: "0.75rem"
-    fontWeight: 600
-  data:
-    fontFamily: "Roboto Mono, ui-monospace, monospace"
-    fontWeight: 500
-rounded:
-  card: "16px"
-  ctl: "10px"
-spacing:
-  sm: "16px"
-  md: "24px"
-components:
-  button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "#ffffff"
-    rounded: "{rounded.ctl}"
-    height: "44px"
-  button-primary-hover:
-    backgroundColor: "{colors.primary-deep}"
-  button-outline:
-    backgroundColor: "#ffffff"
-    textColor: "{colors.primary-ink}"
-    rounded: "{rounded.ctl}"
-    height: "44px"
-  button-accent:
-    backgroundColor: "{colors.accent}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.ctl}"
-  card-soft:
-    backgroundColor: "#ffffff"
-    rounded: "{rounded.card}"
-  field:
-    backgroundColor: "#ffffff"
-    textColor: "{colors.body-text}"
-    rounded: "{rounded.ctl}"
-    height: "44px"
----
+# DESIGN.md: SI Mahasiswa Labor Unklab
 
-# Design System: SIMLU
+Arah visual untuk migrasi ke Tailwind CSS. Ditetapkan oleh tim (Raolika), 12 November 2026.
+File ini adalah sumber arah desain; `antislop` dipakai sebagai filter di atasnya.
 
-## Overview
+## Identitas
 
-**Creative North Star: "Kantor Kampus yang Rapi"** — antarmuka institusional yang tenang:
-data lebih penting dari dekorasi, hierarki jelas, dan warna berasal dari satu sumber nyata
-(logo Computer Science · Universitas Klabat: biru + kuning).
+- **Arah:** B. Operasional kampus.
+- **Produk:** alat kerja harian untuk mahasiswa labor, koordinator unit, dan admin Universitas Klabat (absensi, jadwal shift, laporan, pengajuan).
+- **Kepribadian:** tenang, rapi, bisa dipercaya; terasa seperti alat kantor kampus yang terawat, bukan produk teknologi.
+- **Sumber karakter:** isi produknya sendiri, bukan dekorasi. Motif identitas:
+  1. **Time-grid mingguan** di Jadwal dan Kelola Shift: jam di sumbu vertikal, kuliah dan shift sebagai blok, sehingga bentrok terlihat sebagai blok yang tumpang tindih.
+  2. **Heatmap bulanan** di Riwayat Absensi dan Kinerja: satu kotak per hari, warna menurut status (hadir, telat, izin, alpa).
 
-**Dial: ENERGY 2 / RHYTHM 1 / MOTION 1** — tenang dan seragam secara sadar (aplikasi
-institusional yang dipindai cepat); energi keluar dari presisi data, bukan dekorasi.
+## Dial
 
-Sistem ini desktop-first (dasar 1440px) dan turun bertahap lewat `max-lg`/`max-md`.
-Satu font display serif-slab (Zilla Slab) memberi karakter institusi; Roboto membawa
-keterbacaan; Roboto Mono hanya untuk angka, jam, dan durasi — data yang perlu rapi kolom
-per kolom. **Key Characteristics:** palet biru-kuning dua warna + netral; kartu putih
-ber-shadow lembut tinted biru; angka selalu monospace; status selalu badge berwarna.
+`Dial: ENERGY 2 / RHYTHM 2 / MOTION 2`
 
-## Colors
+- ENERGY 2: sedikit lebih hidup dari "tenang"; tetap tanpa efek dekoratif.
+- RHYTHM 2: struktur konsisten antar-halaman, dengan beberapa jeda yang disengaja (time-grid, heatmap).
+- MOTION 2: transisi antar-state dan sedikit animasi saat data berubah (misalnya baris baru, status berganti). Semua gerak wajib menghormati `prefers-reduced-motion`.
 
-Palet dua warna inti (biru brand + kuning aksen) di atas netral hangat-kemarau.
+## Palet
 
-### Primary
-- **Labor Blue** (#1B76BC): tombol utama, ikon aktif, warna grafik. Teks kecil di atas putih
-  memakai turunannya, bukan warna ini (kontras).
-- **Deep Klabat Navy** (#0F4C81): sidebar, band gelap, footer — permukaan gelap resmi.
-- **Sky Tint** (#E3F0FA): latar badge lembut dan tint ikon.
-- **Morning Wash** (#F2F8FD): latar form halus dan hover.
-- **Link Ink** (#1667A3): teks link kecil di atas putih (lolos AA).
+- **Latar:** netral terang.
+- **Aksen tunggal:** Navy Unklab `#0A2F5B`. Hanya untuk: tombol utama/aksi, menu aktif, cincin fokus, penanda "hari ini", dan blok shift milik sendiri.
+  Link teks, avatar, progress bar, notifikasi belum dibaca, dan baris terpilih memakai warna netral (audit AI slop, 13 Nov 2026).
+- **Warna status (fungsional, bukan aksen):** sukses/hadir, peringatan/telat, bahaya/alpa-ditolak, info/izin.
+  Terang: `ok #16723A`, `warn #A14A06`, `bad #B42318`, `info #2E5596` (disesuaikan dari token lama supaya lolos AA di atas latar soft-nya).
+- **Netral dan mode gelap** (ditetapkan saat implementasi 12 Nov 2026, semua lolos WCAG AA; nilai lengkap di `assets/css/app.css`):
+  - Terang: kanvas `#F4F5F7`, permukaan `#FCFDFE` (putih bertint, bukan #FFF murni), teks `#141A24`, teks sekunder `#566070`, garis input `#7D8796`.
+  - Gelap: kanvas `#0D1117`, permukaan `#151B23`, teks `#E6EAF0`, teks sekunder `#9AA4B3`; aksen navy dipakai versi terang `#8EB3EA` untuk teks/aktif dan `#2F5FA3` untuk tombol.
+- **Ikon:** Phosphor (regular), satu keluarga, dipakai hanya di menu, aksi utama, dan penanda status.
+- **Status tanpa badge/pil** (masukan tim, 13 Nov 2026): status ditulis sebagai ikon kecil + teks, tanpa kotak berwarna.
+  Status normal diredam (teks abu, hanya ikon berwarna); status yang butuh tindakan (telat, alpa, ditolak, bentrok, lewat batas)
+  diberi warna teks. Kondisi normal yang berulang di setiap baris (mis. "Aktif") cukup teks biasa. Label kategori
+  (jenis pengajuan, jumlah posisi, role) bukan status, jadi teks biasa.
 
-### Secondary
-- **Logo Yellow** (#FFC20E): aksen CTA dan tanda aktif sidebar. **The No-Yellow-Text Rule.**
-  Kuning tidak pernah menjadi warna teks di atas terang; ia permukaan, bukan tinta.
+## Tema
 
-### Neutral
-- **Ink** (#2D2D2D): judul. **Body** (#444444): isi. **Mute** (#6A6D73): caption/metadata.
-- **Page** (#FAFBFC): latar halaman. **Line** (#E5E7EB): border kartu.
+- **Terang + tombol dark mode.** Kedua mode harus berfungsi penuh: kontras, komponen, grafik, time-grid, dan heatmap dicek di masing-masing mode.
+- Default mengikuti `prefers-color-scheme`; pilihan pengguna disimpan per browser.
 
-### Status
-- **Ok** (#15803D) / **Bad** (#B91C1C, tint #FEF2F2) / **Warn** (#B45309) — selalu sebagai
-  badge isi teks putih (semuanya ≥ 5:1 di atas putih).
+## Tipografi
 
-## Typography
+- **Atkinson Hyperlegible Next** untuk seluruh UI (judul, label, isi, angka). Diganti dari Plus Jakarta Sans pada 13 Nov 2026
+  karena Plus Jakarta Sans masuk daftar "font default AI" (ux-skill).
+  Alasan: dirancang Braille Institute agar huruf mirip (I/l/1, 0/O) mudah dibedakan; cocok untuk alat kerja yang penuh NIM, jam, dan angka.
+- **Skala teks proyek** (bukan skala bawaan Tailwind): isi 15px, teks sekunder 13px, 12px (`text-2xs`) hanya untuk label sangat kecil
+  (sumbu jam, nama hari, tanggal di heatmap).
+- Angka jam dan durasi memakai `tabular-nums` supaya kolom waktu sejajar.
 
-**Display:** Zilla Slab 600 (fallback Georgia, serif) — hanya hero/judul halaman.
-**Body:** Roboto 400/500/700. **Data:** Roboto Mono 500 — jam, tanggal, durasi, NIM.
+## Tata letak
 
-### Hierarchy
-- **Display** (24px, h1): satu per halaman.
-- **Section heading** (18px, h2): judul kartu/section; langkah ≥ 1.25× dari body 14px.
-- **Body** (14px): isi dan kontrol.
-- **Label** (13px semibold) & **Caption** (12px): label form dan bantuan.
-- **Data** (mono): semua nilai yang dibandingkan antar baris.
+- Sidebar senada dengan halaman (bukan blok navy pekat); menu aktif ditandai latar tipis + aksen navy.
+- Konten dipisah dengan garis dan ruang kosong; kartu hanya untuk hal yang memang perlu terangkat (misalnya modal, panel aksi absensi).
+- Heatmap kehadiran: setiap status punya ikon berbeda di selnya, jadi tidak hanya bergantung pada warna (ramah buta warna merah-hijau).
+- Home: urutan langkah pendaftaran dibawa oleh tanggal nyata periode (30 Nov, 5 Des, 12 Jan), bukan nomor 01-04; navbar tidak sticky.
 
-## Layout
+## Stack
 
-Kontainer `max-w-6xl` (1152px) terpusat; grid 4px. Sidebar tetap 240px di desktop dan
-menjadi slide-over dengan backdrop di bawah 1024px. Grid KPI dan panel dua kolom
-(3:2 atau 2:3) runtuh menjadi satu kolom di `max-md`. Tabel lebar hidup di dalam
-wrapper `overflow-x-auto` dengan lebar minimum 600px — data tidak pernah terpotong.
-
-## Elevation & Depth
-
-Sistem ini **lifted but quiet**: satu shadow untuk semua kartu, dua lapis, tinted biru
-(`0 1px 2px + 0 4px 12px` pada `rgb(15 76 129 / .06)`), bukan hitam keras. Shadow adalah
-penanda elevasi kartu, bukan dekorasi tiap komponen. **The One-Shadow Rule.** Tidak ada
-shadow lain di luar `--shadow-soft`.
-
-## Shapes
-
-Dua radius saja: kartu 16px, kontrol 10px, badge pill. Radius bertingkat = hierarki
-permukaan. Border 1px `line` di kartu; tanpa border berwarna di kiri kartu.
-
-## Components
-
-### Buttons
-- **Shape:** 10px radius, tinggi 44px, gap ikon .5rem.
-- **Primary:** Labor Blue, teks putih; hover menyatu ke Deep Navy.
-- **Outline:** putih, teks Link Ink, border 1.5px primary; hover Morning Wash.
-- **Accent:** Logo Yellow, teks Ink, semibold — hanya untuk CTA utama publik.
-- **Danger outline:** putih, teks Bad, border 1.5px Bad.
-
-### Cards
-- **Card-soft:** putih, border 1px Line, radius 16px, One-Shadow. Padding dalam 24px.
-- Tabel di dalam kartu dibungkus `overflow-x-auto`.
-
-### Inputs
-- **Field:** putih, border Line, radius 10px, tinggi 44px; fokus = border primary +
-  ring 3px `rgb(27 118 188 / .15)`. Label di atas field (13px semibold), bantuan/error
-  di bawahnya.
-
-### Badges
-- Pill 11px semibold; status ok/bad/warn dengan teks putih; `soft` untuk status netral
-  (Sky Tint + Deep Navy).
-
-### Sidebar
-- Deep Navy; item 14px `#CFE3F5`; aktif = putih semibold + lapis putih 14%.
-  Tanda aktif mengikuti halaman/hash, disinkronkan JS.
-
-## Do's and Don'ts
-
-### Do:
-- **Do** ambil warna dari token `theme.css`; JS pun membaca CSS var (bukan hex).
-- **Do** set angka, jam, durasi dengan Roboto Mono.
-- **Do** beri tiga state (kosong, memuat, error) pada setiap tampilan data; error pakai
-  banner `db.fail` dengan tombol muat ulang.
-
-### Don't:
-- **Don't** memakai warna di luar token (termasuk `bg-red-50` bawaan Tailwind — pakai `bg-bad-50`).
-- **Don't** memakai kuning sebagai warna teks, atau `primary` untuk teks kecil di putih.
-- **Don't** menaruh tabel langsung di kartu tanpa wrapper scroll; data tidak boleh terpotong.
-- **Don't** menambah radius/shadow/font baru di luar sistem.
-
----
-Catatan: `.impeccable/design.json` (sidecar untuk live panel) tidak dibuat karena proyek
-ini tidak memakai panel Impeccable; regenerasi lewat `$impeccable document` bila diperlukan.
+- Tailwind CSS v4 (versi browser, disimpan lokal di `assets/vendor/`), tanpa npm atau build step; tetap jalan di VS Code Live Server.
+- Bootstrap dilepas: modal pakai `<dialog>`, menu pakai Popover API, toast tetap di `js/ui.js`.
+- Logika data (`js/store.js`, `js/demo-data.js`) tidak diubah.

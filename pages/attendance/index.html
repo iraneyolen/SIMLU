@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Absensi | SI Mahasiswa Labor Unklab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet">
+  <script src="../../assets/vendor/tailwindcss-browser.js"></script>
+  <script src="../../js/boot.js"></script>
+</head>
+<body data-role="student" data-page="attendance" data-title="Absensi" data-subtitle="Check-in saat mulai shift, check-out saat selesai">
+  <main id="main">
+    <div class="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+      <section class="panel flex flex-col items-center gap-4 px-5 py-8 text-center lg:py-12" aria-label="Absensi hari ini">
+        <div class="text-sm font-medium text-ink-2" id="todayDate"></div>
+        <div class="tabular text-5xl font-bold tracking-tight sm:text-6xl" id="liveClock" aria-hidden="true">--:--:--</div>
+        <span class="status text-sm" id="stateBadge"></span>
+        <dl class="m-0 w-full max-w-md rounded-lg bg-sunken px-4 py-2 text-left" id="shiftInfo"></dl>
+        <button class="btn btn-lg w-full max-w-md" type="button" id="actionButton" disabled>Memuat...</button>
+        <p class="m-0 text-xs text-ink-2" id="actionHint"></p>
+        <div class="sr-only" role="status" id="liveStatus"></div>
+      </section>
+      <div class="flex flex-col gap-6">
+        <section class="flex flex-col gap-2" aria-labelledby="statusTitle">
+          <h2 id="statusTitle">Status hari ini</h2>
+          <dl class="m-0 divide-y divide-line rounded-xl border border-line bg-surface px-4">
+            <div class="kv py-2.5"><dt>Check-in</dt><dd class="tabular" id="checkInValue">-</dd></div>
+            <div class="kv py-2.5"><dt>Check-out</dt><dd class="tabular" id="checkOutValue">-</dd></div>
+            <div class="kv py-2.5"><dt>Durasi kerja</dt><dd class="tabular" id="durationValue">0 j 00 m</dd></div>
+          </dl>
+        </section>
+        <section class="flex flex-col gap-2" aria-labelledby="rulesTitle">
+          <h2 id="rulesTitle">Aturan absensi</h2>
+          <ul class="m-0 flex list-disc flex-col gap-1.5 pl-5 text-ink-2">
+            <li>Check-in dibuka 15 menit sebelum shift mulai.</li>
+            <li>Telat jika check-in lebih dari 10 menit setelah shift mulai.</li>
+            <li>Check-out hanya bisa setelah check-in.</li>
+            <li>Lupa check-out? Status tercatat "Belum check-out". Hubungi koordinator.</li>
+          </ul>
+        </section>
+        <button class="btn btn-secondary self-start" type="button" id="resetDemo">Ulangi demo absensi</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="../../js/demo-data.js"></script>
+  <script src="../../js/store.js"></script>
+  <script src="../../js/ui.js"></script>
+  <script src="../../js/layout.js"></script>
+  <script src="../../js/pages/attendance.js"></script>
+</body>
+</html>

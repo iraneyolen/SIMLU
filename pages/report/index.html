@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laporan Mingguan | SI Mahasiswa Labor Unklab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet">
+  <script src="../../assets/vendor/tailwindcss-browser.js"></script>
+  <script src="../../js/boot.js"></script>
+</head>
+<body data-role="student" data-page="report" data-title="Laporan Mingguan" data-subtitle="Ceritakan pekerjaan kamu setiap minggu">
+  <main id="main">
+    <div class="grid gap-6 lg:grid-cols-[1fr_1.3fr]">
+      <section class="panel flex flex-col gap-4 p-5" aria-labelledby="formTitle">
+        <div><h2 id="formTitle">Isi laporan</h2><p class="m-0 text-xs text-ink-2" id="deadlineText"></p></div>
+        <form id="reportForm" class="flex flex-col gap-4" novalidate>
+          <div><label class="label" for="weekSelect">Minggu</label><select class="input" id="weekSelect"></select></div>
+          <div class="flex items-start gap-3 rounded-lg bg-sunken px-4 py-3" id="autoInfo"></div>
+          <div><label class="label" for="workText">Pekerjaan yang dilakukan *</label>
+            <textarea class="input" id="workText" rows="4" placeholder="Contoh: menyusun buku baru di rak 300-an, melayani 40 peminjaman" required minlength="10"></textarea>
+            <p class="error-msg">Tulis minimal satu kalimat tentang pekerjaan kamu.</p></div>
+          <div><label class="label" for="noteText">Kendala atau catatan</label>
+            <textarea class="input" id="noteText" rows="3" placeholder="Opsional"></textarea></div>
+          <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <button class="btn btn-secondary" type="button" id="draftBtn">Simpan draf</button>
+            <button class="btn btn-primary" type="submit">Kirim laporan</button>
+          </div>
+        </form>
+      </section>
+      <section class="flex flex-col gap-3" aria-labelledby="histTitle">
+        <h2 id="histTitle">Riwayat laporan</h2>
+        <div id="tableBox"></div>
+        <div class="rounded-lg bg-info-soft px-4 py-3 text-info" id="commentBox"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../../js/demo-data.js"></script>
+  <script src="../../js/store.js"></script>
+  <script src="../../js/ui.js"></script>
+  <script src="../../js/layout.js"></script>
+  <script src="../../js/pages/report.js"></script>
+</body>
+</html>

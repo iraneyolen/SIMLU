@@ -1,135 +1,100 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Daftar · SIMLU Unklab</title>
-
-  <script src="../../assets/vendor/tailwindcss-browser.js"></script>
-  <script src="../../assets/js/tailwind-boot.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <title>Pendaftaran | SI Mahasiswa Labor Unklab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&family=Zilla+Slab:wght@600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet">
+  <script src="../../assets/vendor/tailwindcss-browser.js"></script>
+  <script src="../../js/boot.js"></script>
 </head>
-<body class="bg-page font-sans text-body">
-
-  <main class="flex min-h-screen">
-    <!-- Panel brand (desktop) -->
-    <aside class="flex w-2/5 flex-col justify-between bg-primary-900 p-10 max-lg:hidden">
-      <a href="../../" class="flex items-center gap-2 font-semibold text-white">
-        <span class="flex h-9 w-9 items-center justify-center rounded-ctl bg-accent text-lg font-bold text-ink">S</span>
-        SIMLU · Unklab
-      </a>
-      <div>
-        <h1 class="font-display text-3xl font-semibold text-white">Bergabung jadi<br>Mahasiswa Labor</h1>
-        <ul class="mt-4 space-y-2 text-sm text-primary-100">
-          <li><i class="bi bi-check2 mr-2 text-accent" aria-hidden="true"></i>Pendapatan per jam kerja</li>
-          <li><i class="bi bi-check2 mr-2 text-accent" aria-hidden="true"></i>Pengalaman kerja nyata di kampus</li>
-          <li><i class="bi bi-check2 mr-2 text-accent" aria-hidden="true"></i>Jadwal menyesuaikan kuliah</li>
-        </ul>
+<body>
+  <header class="border-b border-line">
+    <nav class="mx-auto flex max-w-3xl items-center gap-3 px-4 py-3 sm:px-6" aria-label="Utama">
+      <a class="text-base font-bold tracking-tight text-ink no-underline hover:no-underline" href="../../index.html">SI Labor Unklab</a>
+      <div class="ml-auto flex items-center gap-2">
+        <button class="btn btn-ghost px-2.5" type="button" id="themeBtn" aria-label="Ganti tema terang/gelap"></button>
+        <a class="btn btn-secondary" href="../login/index.html">Masuk</a>
       </div>
-      <p class="text-xs text-primary-100">© 2026 Universitas Klabat · Group Project WDC</p>
-    </aside>
+    </nav>
+  </header>
 
-    <!-- Form -->
-    <section class="flex flex-1 items-center justify-center px-6 py-10 max-md:px-4">
-      <div class="w-full max-w-md">
-        <h2 class="text-2xl font-bold text-ink">Daftar Akun</h2>
-        <p class="mt-1 text-sm text-mute">Lengkapi data dirimu untuk mendaftar sebagai mahasiswa labor</p>
+  <main class="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8 sm:px-6 lg:py-12">
+    <div>
+      <h1 class="text-3xl">Pendaftaran mahasiswa labor</h1>
+      <p class="m-0 mt-1 text-ink-2">Periode Semester Genap 2026/2027. Kolom bertanda * wajib diisi.</p>
+    </div>
+    <p class="m-0 rounded-lg bg-info-soft px-4 py-3 text-info">Setelah dikirim, admin memeriksa pendaftaran kamu. Kamu bisa masuk setelah akun disetujui.</p>
+    <div class="rounded-lg bg-ok-soft px-4 py-3 font-medium text-ok" id="registerSuccess" role="status" hidden>
+      Pendaftaran terkirim. Tunggu persetujuan admin, lalu <a href="../login/index.html">masuk di sini</a>.
+    </div>
 
-        <form id="regForm" class="mt-8 space-y-4" novalidate>
-          <div>
-            <label class="label" for="name">Nama Lengkap <span class="text-bad" aria-hidden="true">*</span></label>
-            <input class="field" type="text" id="name" name="name" autocomplete="name" placeholder="Sesuai KTM" required>
-            <p class="err hidden" id="errName"></p>
-          </div>
-          <div>
-            <label class="label" for="nim">NIM <span class="text-bad" aria-hidden="true">*</span></label>
-            <input class="field" type="text" id="nim" name="nim" inputmode="numeric" placeholder="Contoh: 230102005" required>
-            <p class="help">NIM Unklab tanpa titik</p>
-            <p class="err hidden" id="errNim"></p>
-          </div>
-          <div>
-            <label class="label" for="email">Email Unklab <span class="text-bad" aria-hidden="true">*</span></label>
-            <input class="field" type="email" id="email" name="email" autocomplete="email" placeholder="nama@unklab.ac.id" required>
-            <p class="err hidden" id="errEmail"></p>
-          </div>
-          <div>
-            <label class="label" for="program">Program Studi <span class="text-bad" aria-hidden="true">*</span></label>
-            <select class="field" id="program" name="program" required>
-              <option value="">Pilih program studi</option>
-              <option>Sistem Informasi</option>
-              <option>Informatika</option>
-              <option>Teknologi Informasi</option>
-              <option>Lainnya</option>
-            </select>
-            <p class="err hidden" id="errProgram"></p>
-          </div>
-          <div>
-            <label class="label" for="password">Password <span class="text-bad" aria-hidden="true">*</span></label>
-            <input class="field" type="password" id="password" name="password" autocomplete="new-password" required>
-            <p class="help">Minimal 6 karakter</p>
-            <p class="err hidden" id="errPassword"></p>
-          </div>
+    <form id="registerForm" class="flex flex-col gap-8" novalidate>
+      <fieldset class="m-0 grid gap-4 border-0 p-0 sm:grid-cols-2">
+        <legend class="mb-4 text-base font-semibold">Data diri</legend>
+        <div><label class="label" for="name">Nama lengkap *</label>
+          <input class="input" id="name" name="name" placeholder="Sesuai KTM" autocomplete="name" required>
+          <p class="error-msg">Isi nama lengkap kamu.</p></div>
+        <div><label class="label" for="nim">NIM *</label>
+          <input class="input tabular" id="nim" name="nim" placeholder="contoh: 12410034" inputmode="numeric" pattern="[0-9]{8,12}" required>
+          <p class="error-msg">NIM berisi 8-12 angka.</p></div>
+        <div><label class="label" for="email">Email kampus *</label>
+          <input class="input" id="email" name="email" type="email" placeholder="nim@student.unklab.ac.id" autocomplete="email" pattern=".+@student\.unklab\.ac\.id" required>
+          <p class="error-msg">Gunakan email @student.unklab.ac.id.</p></div>
+        <div><label class="label" for="phone">No. HP / WhatsApp *</label>
+          <input class="input" id="phone" name="phone" type="tel" placeholder="08xx xxxx xxxx" autocomplete="tel" required>
+          <p class="error-msg">Isi nomor yang bisa dihubungi.</p></div>
+        <div><label class="label" for="faculty">Fakultas *</label>
+          <input class="input" id="faculty" name="faculty" placeholder="contoh: Ilmu Komputer" required>
+          <p class="error-msg">Isi fakultas kamu.</p></div>
+        <div><label class="label" for="program">Program studi *</label>
+          <input class="input" id="program" name="program" placeholder="contoh: Informatika" required>
+          <p class="error-msg">Isi program studi kamu.</p></div>
+      </fieldset>
 
-          <div id="formAlert" class="hidden rounded-ctl bg-bad-50 px-4 py-3 text-sm text-bad" role="alert"></div>
+      <fieldset class="m-0 grid gap-4 border-0 border-t border-line p-0 pt-6 sm:grid-cols-2">
+        <legend class="float-left mb-4 w-full text-base font-semibold">Pilihan kerja</legend>
+        <div><label class="label" for="unit">Unit kerja pilihan *</label>
+          <select class="input" id="unit" name="unit" required><option value="">Pilih unit</option></select>
+          <p class="error-msg">Pilih satu unit kerja.</p></div>
+        <div><label class="label" for="unitAlt">Unit kerja alternatif</label>
+          <select class="input" id="unitAlt" name="unitAlt"><option value="">Opsional</option></select></div>
+        <div class="sm:col-span-2"><label class="label" for="motivation">Alasan ingin bekerja sebagai mahasiswa labor *</label>
+          <textarea class="input" id="motivation" name="motivation" rows="4" placeholder="Ceritakan singkat motivasi kamu" required></textarea>
+          <p class="error-msg">Tulis alasan kamu.</p></div>
+      </fieldset>
 
-          <p class="help"><span class="text-bad" aria-hidden="true">*</span> Wajib diisi</p>
-          <button class="btn btn-primary w-full text-base" id="btnReg" type="submit">Daftar</button>
-        </form>
+      <fieldset class="m-0 border-0 border-t border-line p-0 pt-6">
+        <legend class="float-left mb-4 w-full text-base font-semibold">Dokumen persyaratan</legend>
+        <div class="clear-left"><label class="label" for="driveLink">Link Google Drive dokumen *</label>
+          <input class="input" id="driveLink" name="driveLink" type="url" placeholder="https://drive.google.com/..." pattern="https://(drive|docs)\.google\.com/.+" aria-describedby="driveHelp" required>
+          <p class="error-msg">Tempel link Google Drive yang diawali https://drive.google.com/</p>
+          <p class="hint" id="driveHelp">Isi folder: KTM, KHS terakhir, surat izin orang tua. Atur akses link ke "Siapa saja yang memiliki link".</p></div>
+      </fieldset>
 
-        <p class="mt-6 text-center text-sm text-mute">
-          Sudah punya akun? <a href="../login/" class="font-semibold text-primary-ink hover:underline">Masuk</a>
-        </p>
+      <fieldset class="m-0 grid gap-4 border-0 border-t border-line p-0 pt-6 sm:grid-cols-2">
+        <legend class="float-left mb-4 w-full text-base font-semibold">Akun</legend>
+        <div><label class="label" for="password">Password *</label>
+          <input class="input" id="password" name="password" type="password" placeholder="Minimal 8 karakter" minlength="8" autocomplete="new-password" required>
+          <p class="error-msg">Password minimal 8 karakter.</p></div>
+        <div><label class="label" for="password2">Ulangi password *</label>
+          <input class="input" id="password2" name="password2" type="password" placeholder="Ketik ulang password" autocomplete="new-password" required>
+          <p class="error-msg">Password tidak sama.</p></div>
+      </fieldset>
+
+      <div class="flex flex-col-reverse gap-2 border-t border-line pt-6 sm:flex-row sm:justify-end">
+        <a class="btn btn-secondary" href="../../index.html">Batal</a>
+        <button class="btn btn-primary" type="submit">Kirim pendaftaran</button>
       </div>
-    </section>
+    </form>
   </main>
 
-  <script src="../../js/db.js"></script>
-  <script src="../../js/auth.js"></script>
-  <script>
-    const form = document.getElementById('regForm');
-    const alertBox = document.getElementById('formAlert');
-    const btn = document.getElementById('btnReg');
-
-    function showErr(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.remove('hidden'); }
-    function clearErrs() { document.querySelectorAll('.err').forEach(e => e.classList.add('hidden')); alertBox.classList.add('hidden'); }
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      clearErrs();
-      const name = document.getElementById('name').value.trim();
-      const nim = document.getElementById('nim').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const program = document.getElementById('program').value;
-      const password = document.getElementById('password').value;
-
-      let ok = true;
-      if (!name) { showErr('errName', 'Nama lengkap wajib diisi'); ok = false; }
-      if (!/^\d{6,12}$/.test(nim)) { showErr('errNim', 'NIM harus 6-12 digit angka'); ok = false; }
-      if (!/^[^@\s]+@[^@\s]+$/.test(email)) { showErr('errEmail', 'Format email tidak valid'); ok = false; }
-      else if (!email.endsWith('@unklab.ac.id')) { showErr('errEmail', 'Gunakan email Unklab (@unklab.ac.id)'); ok = false; }
-      if (!program) { showErr('errProgram', 'Pilih program studi'); ok = false; }
-      if (password.length < 6) { showErr('errPassword', 'Password minimal 6 karakter'); ok = false; }
-      if (!ok) return;
-
-      // Demo statis: duplikat email dicek pada seed + overlay localStorage
-      const users = await db.list('users');
-      if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-        alertBox.textContent = 'Email sudah terdaftar. Coba masuk, atau gunakan email lain.'; alertBox.classList.remove('hidden'); return;
-      }
-
-      btn.disabled = true; btn.textContent = 'Menyimpanâ€¦';
-      try {
-        await db.insert('users', { nim, name, email, role: 'student', program });
-        // langsung buat sesi demo
-        sessionStorage.setItem('simlu:session', JSON.stringify({ id: 'new', nim, name, email, role: 'student', program }));
-        location.replace(auth.root + 'pages/dashboard/');
-      } catch (err) {
-        alertBox.textContent = 'Gagal menyimpan: ' + err.message; alertBox.classList.remove('hidden');
-        btn.disabled = false; btn.textContent = 'Daftar';
-      }
-    });
-  </script>
+  <script src="../../js/demo-data.js"></script>
+  <script src="../../js/store.js"></script>
+  <script src="../../js/ui.js"></script>
+  <script src="../../js/pages/register.js"></script>
 </body>
 </html>

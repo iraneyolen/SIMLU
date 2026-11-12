@@ -1,0 +1,194 @@
+/* SI Mahasiswa Labor Unklab: sumber Tailwind v4 (dibaca @tailwindcss/browser lewat js/boot.js).
+   Arah desain: DESIGN.md (B. Operasional kampus, aksen tunggal navy Unklab, Atkinson Hyperlegible Next,
+   terang + gelap, dial ENERGY 2 / RHYTHM 2 / MOTION 2).
+   Semua pasangan warna di bawah sudah diuji WCAG AA (teks >= 4.5:1, garis kontrol >= 3:1). */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------- Token per mode (nilai mentah) ---------- */
+:root {
+  --c-canvas: #F4F5F7;      /* latar halaman */
+  --c-surface: #FCFDFE;     /* panel, tabel, input: putih bertint navy tipis, bukan #FFF murni */
+  --c-sunken: #ECEEF2;      /* latar halus di dalam panel (hover, header tabel) */
+  --c-line: #E1E4EA;        /* pemisah */
+  --c-line-strong: #7D8796; /* batas input (>= 3:1) */
+  --c-ink: #141A24;         /* teks utama */
+  --c-ink-2: #566070;       /* teks sekunder */
+  --c-accent: #0A2F5B;      /* navy Unklab: aksi utama, menu aktif, fokus */
+  --c-accent-btn: #0A2F5B;  /* latar tombol utama */
+  --c-accent-hover: #13427C;
+  --c-accent-soft: #E4EAF3; /* latar menu aktif, sorotan hari ini */
+  --c-ok: #16723A;   --c-ok-soft: #E3F2E8;
+  --c-warn: #A14A06; --c-warn-soft: #FAEEDB;
+  --c-bad: #B42318;  --c-bad-soft: #FBE6E4;
+  --c-info: #2E5596; --c-info-soft: #E6ECF7;
+  --c-brand-panel: #0A2F5B;   /* panel merek Login, tetap navy di kedua tema */
+  --c-on-brand-2: #C9D6EA;    /* teks sekunder di atas panel merek (9,1:1) */
+  color-scheme: light;
+}
+.dark {
+  --c-canvas: #0D1117;
+  --c-surface: #151B23;
+  --c-sunken: #1B222C;
+  --c-line: #29313D;
+  --c-line-strong: #6B7789;
+  --c-ink: #E6EAF0;
+  --c-ink-2: #9AA4B3;
+  --c-accent: #8EB3EA;      /* navy terlalu gelap di latar gelap: dipakai versi terang untuk teks/aktif */
+  --c-accent-btn: #2F5FA3;
+  --c-accent-hover: #3A6DB5;
+  --c-accent-soft: #1A2A44;
+  --c-ok: #5CC487;   --c-ok-soft: #14291C;
+  --c-warn: #E8A458; --c-warn-soft: #2E2113;
+  --c-bad: #F2847A;  --c-bad-soft: #331715;
+  --c-info: #8EB3EA; --c-info-soft: #1A2A44;
+  color-scheme: dark;
+}
+
+/* ---------- Skala teks proyek (bukan skala bawaan Tailwind) ----------
+   Teks sekunder 13px dan isi 15px supaya nyaman dibaca; 12px (text-2xs) hanya untuk
+   label sangat kecil seperti sumbu jam, nama hari, dan angka tanggal di heatmap. */
+@theme {
+  --text-2xs: 0.75rem;   --text-2xs--line-height: 1rem;
+  --text-xs: 0.8125rem;  --text-xs--line-height: 1.15rem;
+  --text-sm: 0.9375rem;  --text-sm--line-height: 1.4rem;
+  --text-base: 1.0625rem; --text-base--line-height: 1.55rem;
+}
+
+/* ---------- Token yang dipakai utility Tailwind (bg-canvas, text-ink-2, border-line, ...) ---------- */
+@theme inline {
+  --font-sans: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --color-canvas: var(--c-canvas);
+  --color-surface: var(--c-surface);
+  --color-sunken: var(--c-sunken);
+  --color-line: var(--c-line);
+  --color-line-strong: var(--c-line-strong);
+  --color-ink: var(--c-ink);
+  --color-ink-2: var(--c-ink-2);
+  --color-accent: var(--c-accent);
+  --color-accent-btn: var(--c-accent-btn);
+  --color-accent-hover: var(--c-accent-hover);
+  --color-accent-soft: var(--c-accent-soft);
+  --color-ok: var(--c-ok);       --color-ok-soft: var(--c-ok-soft);
+  --color-warn: var(--c-warn);   --color-warn-soft: var(--c-warn-soft);
+  --color-bad: var(--c-bad);     --color-bad-soft: var(--c-bad-soft);
+  --color-info: var(--c-info);   --color-info-soft: var(--c-info-soft);
+  --color-brand-panel: var(--c-brand-panel);
+  --color-on-brand-2: var(--c-on-brand-2);
+}
+
+/* ---------- Dasar ---------- */
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body { @apply bg-canvas font-sans text-sm text-ink antialiased; }
+  h1 { @apply text-2xl font-bold tracking-tight; }
+  h2 { @apply text-base font-semibold; }
+  h3 { @apply text-sm font-semibold; }
+  /* Link teks memakai warna teks + garis bawah (bukan navy): navy disimpan untuk aksi dan posisi aktif */
+  a { @apply font-medium text-ink underline decoration-line-strong/70 underline-offset-4 hover:decoration-ink; }
+  ::selection { background: var(--c-accent-soft); color: var(--c-ink); }
+  :focus-visible { outline: 2px solid var(--c-accent); outline-offset: 2px; border-radius: 6px; }
+  [hidden] { display: none !important; }
+  .tabular { font-variant-numeric: tabular-nums; }
+}
+
+/* ---------- Komponen yang berulang di banyak halaman (JS biasa tanpa framework komponen) ---------- */
+@layer components {
+  /* Tombol. Radius 8px untuk semua kontrol; tinggi minimal 40px (44px di HP). */
+  .btn { @apply inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-lg border border-transparent px-4 text-sm font-semibold whitespace-nowrap no-underline transition-colors duration-150 select-none max-sm:min-h-11 hover:no-underline disabled:cursor-not-allowed disabled:opacity-60; }
+  .btn-primary { @apply bg-accent-btn text-white hover:bg-accent-hover; }
+  /* Hover dibedakan per jenis: tombol = latar satu tingkat lebih gelap + garis, menu = teks menguat, baris tabel = latar */
+  .btn-secondary { @apply border-line-strong/50 bg-surface text-ink hover:border-line-strong hover:bg-sunken; }
+  .btn-success { @apply bg-ok text-white hover:opacity-90 dark:text-canvas; }
+  .btn-danger { @apply bg-bad text-white hover:opacity-90 dark:text-canvas; }
+  .btn-ghost { @apply text-ink-2 hover:bg-sunken hover:text-ink; }
+  .btn-link { @apply min-h-0 border-0 bg-transparent px-0 font-semibold text-accent hover:underline; }
+  .btn-sm { @apply min-h-8 px-3 text-xs max-sm:min-h-10; }
+  .btn-lg { @apply min-h-12 px-6 text-base; }
+
+  /* Form: label di atas, pesan error di bawah (tampil setelah form dicoba kirim). */
+  .label { @apply mb-1.5 block text-sm font-medium text-ink; }
+  .input { @apply block min-h-10 w-full rounded-lg border border-line-strong bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink-2 focus:border-accent focus:ring-2 focus:ring-accent/25 focus:outline-none max-sm:min-h-11; }
+  textarea.input { @apply min-h-24; }
+  .hint { @apply mt-1.5 text-xs text-ink-2; }
+  .error-msg { @apply mt-1.5 hidden text-xs font-medium text-bad; }
+  .was-validated .input:invalid { @apply border-bad; }
+  .was-validated .input:invalid ~ .error-msg { @apply block; }
+
+  /* Status: ikon + teks, tanpa kotak/pil. Status normal diredam (hanya ikon berwarna);
+     status yang butuh tindakan (telat, alpa, ditolak, bentrok) diberi warna teks supaya menonjol. */
+  .status { @apply inline-flex items-center gap-1.5 text-xs font-medium whitespace-nowrap text-ink-2; }
+  .status i { @apply text-[15px] leading-none; }
+  .status-ok i { @apply text-ok; }
+  .status-info i { @apply text-info; }
+  .status-neutral i { @apply text-ink-2; }
+  .status-warn { @apply font-semibold text-warn; }
+  .status-bad { @apply font-semibold text-bad; }
+
+  /* Panel: dipakai hemat, untuk kelompok yang memang perlu bingkai. */
+  .panel { @apply rounded-xl border border-line bg-surface; }
+  .section-title { @apply flex items-baseline justify-between gap-3; }
+
+  /* Daftar baris bergaris dalam satu bingkai (pengajuan, absensi tim, kuliah hari ini) */
+  .rows { @apply m-0 list-none divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface p-0; }
+  .rows > * { @apply flex items-center gap-3 px-4 py-3; }
+
+  /* Pasangan label-nilai */
+  .kv { @apply flex items-baseline justify-between gap-3 py-1.5; }
+  .kv dt { @apply text-ink-2; }
+  .kv dd { @apply m-0 text-right font-semibold; }
+
+  /* Tabel data: jadi daftar kartu di bawah 768px. */
+  .data-table { @apply w-full border-collapse text-sm; }
+  .data-table th { @apply border-b border-line bg-sunken px-4 py-2.5 text-left text-xs font-semibold whitespace-nowrap text-ink-2; }
+  .data-table td { @apply border-b border-line px-4 py-3 align-middle; }
+  .data-table tbody tr:last-child td { @apply border-b-0; }
+  .data-table tr.is-clickable { @apply cursor-pointer hover:bg-sunken; }
+  .data-table tr.is-selected td { @apply bg-sunken; }
+  @media (max-width: 767.98px) {
+    .data-table thead { @apply hidden; }
+    .data-table tr { @apply mb-2 block rounded-xl border border-line bg-surface px-4 py-3; }
+    .data-table td { @apply flex items-center justify-between gap-3 border-0 px-0 py-1 text-right; }
+    .data-table td::before { content: attr(data-label); @apply shrink-0 text-left text-xs text-ink-2; }
+    .data-table td:first-child { @apply block pb-2 text-left; }
+    .data-table td:first-child::before, .data-table td[data-label=""]::before { @apply hidden; }
+    .data-table tr.is-selected { @apply border-line-strong; }
+  }
+
+  /* Ringkasan angka: satu strip dibagi garis, bukan deretan kartu identik. */
+  .summary { @apply grid grid-cols-2 overflow-hidden rounded-xl border border-line bg-surface lg:auto-cols-fr lg:grid-flow-col; }
+  .summary > div { @apply flex flex-col gap-0.5 border-line p-4 lg:border-l lg:first:border-l-0 max-lg:odd:border-r max-lg:nth-[n+3]:border-t; }
+  .summary dt { @apply text-xs font-medium text-ink-2; }
+  .summary dd { @apply m-0 text-2xl font-bold tracking-tight tabular-nums; }
+  .summary .note { @apply text-xs text-ink-2; }
+
+  /* Kontrol segmen (pengganti tab) */
+  .seg { @apply inline-flex rounded-lg border border-line bg-sunken p-1; }
+  .seg button { @apply min-h-8 cursor-pointer rounded-md px-3 text-xs font-semibold text-ink-2 hover:text-ink; }
+  .seg button[aria-pressed="true"] { @apply bg-surface text-ink shadow-sm; }
+
+  /* Modal <dialog>: Escape menutup secara bawaan. */
+  .dialog { @apply m-auto w-[calc(100%-2rem)] max-w-lg rounded-xl border border-line bg-surface p-0 text-ink shadow-xl; }
+  .dialog::backdrop { background: rgb(8 15 28 / 0.55); }
+  .dialog-head { @apply flex items-start justify-between gap-4 border-b border-line px-5 py-4; }
+  .dialog-body { @apply flex flex-col gap-4 px-5 py-4; }
+  .dialog-foot { @apply flex justify-end gap-2 border-t border-line bg-sunken/60 px-5 py-3; }
+
+  /* Sidebar */
+  .nav-link { @apply flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-ink-2 no-underline hover:text-ink hover:no-underline max-lg:min-h-11; }
+  .nav-link:not([aria-current="page"]):hover svg, .nav-link:not([aria-current="page"]):hover i { @apply text-accent; }
+  .nav-link[aria-current="page"] { @apply bg-accent-soft font-semibold text-accent; }
+  .nav-link svg { @apply size-[18px] shrink-0; }
+
+  /* Ikon SVG mengikuti warna teks */
+  .icon { @apply inline-block size-4 shrink-0; }
+}
+
+/* ---------- Gerak (MOTION 2): transisi state, dimatikan bila pengguna memilih kurangi gerak ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .btn:active:not(:disabled) { transform: translateY(1px); }
+  .dialog[open] { animation: dialog-in 160ms ease-out; }
+  .flash { animation: flash 1.2s ease-out; }
+  @keyframes dialog-in { from { opacity: 0; transform: translateY(6px) scale(0.98); } }
+  @keyframes flash { from { background-color: var(--c-accent-soft); } }
+}

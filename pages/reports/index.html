@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laporan Mingguan | SI Mahasiswa Labor Unklab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet">
+  <script src="../../assets/vendor/tailwindcss-browser.js"></script>
+  <script src="../../js/boot.js"></script>
+</head>
+<body data-role="auto" data-page="reports" data-title="Laporan Mingguan" data-subtitle="Rekap laporan mingguan per mahasiswa">
+  <main id="main">
+    <div class="flex flex-wrap items-end gap-3"><div class="w-full sm:w-48"><label class="label" for="weekFilter">Minggu</label><select class="input" id="weekFilter"><option>Minggu ke-45</option><option>Minggu ke-44</option><option>Minggu ke-43</option></select></div><div class="hidden w-full sm:w-48" id="unitFilterBox"><label class="label" for="unitFilter">Unit</label><select class="input" id="unitFilter"><option>Semua unit</option><option>Perpustakaan</option><option>Kafetaria</option><option>IT Support</option><option>Asrama</option><option>Kebersihan Kampus</option><option>Administrasi</option></select></div><div class="w-full sm:w-48"><label class="label" for="statusFilter">Status</label><select class="input" id="statusFilter"><option>Semua status</option><option>Menunggu nilai</option><option>Dinilai</option><option>Terlambat</option><option>Belum dikirim</option></select></div><div class="flex gap-2 sm:ml-auto"><button class="btn btn-secondary" type="button" id="exportBtn"><i class="ph ph-download-simple" aria-hidden="true"></i>Unduh CSV</button></div></div>
+    <dl id="statList"></dl>
+    <div id="tableBox"></div>
+    <p class="m-0 text-xs text-ink-2" id="roleNote"></p>
+  </main>
+
+  <script src="../../js/demo-data.js"></script>
+  <script src="../../js/store.js"></script>
+  <script src="../../js/ui.js"></script>
+  <script src="../../js/layout.js"></script>
+  <script src="../../js/pages/reports.js"></script>
+</body>
+</html>

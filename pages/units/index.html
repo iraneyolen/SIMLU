@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit Kerja | SI Mahasiswa Labor Unklab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet">
+  <script src="../../assets/vendor/tailwindcss-browser.js"></script>
+  <script src="../../js/boot.js"></script>
+</head>
+<body data-role="admin" data-page="units" data-title="Unit Kerja" data-subtitle="Kuota, koordinator, dan batas jam tiap unit">
+  <main id="main">
+    <div class="flex flex-wrap items-end gap-3"><div class="w-full sm:w-56"><label class="label" for="searchInput">Cari</label><input class="input" id="searchInput" type="search" placeholder="Nama unit"></div><div class="flex gap-2 sm:ml-auto"><button class="btn btn-primary" type="button" id="addBtn"><i class="ph ph-plus" aria-hidden="true"></i>Tambah unit</button></div></div>
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3" id="unitGrid"></div>
+  </main>
+
+  <script src="../../js/demo-data.js"></script>
+  <script src="../../js/store.js"></script>
+  <script src="../../js/ui.js"></script>
+  <script src="../../js/layout.js"></script>
+  <script src="../../js/pages/units.js"></script>
+</body>
+</html>

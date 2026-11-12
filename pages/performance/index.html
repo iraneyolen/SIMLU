@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kinerja | SI Mahasiswa Labor Unklab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet">
+  <script src="../../assets/vendor/tailwindcss-browser.js"></script>
+  <script src="../../js/boot.js"></script>
+</head>
+<body data-role="student" data-page="performance" data-title="Kinerja" data-subtitle="Dihitung otomatis dari absensi dan laporan mingguan">
+  <main id="main">
+    <div class="flex flex-wrap items-end gap-3"><div class="w-full sm:w-48"><label class="label" for="periodFilter">Periode</label><select class="input" id="periodFilter"><option>November 2026</option><option>Oktober 2026</option></select></div><div class="flex gap-2 sm:ml-auto"></div></div>
+    <dl id="statList"></dl>
+    <div class="grid gap-6 lg:grid-cols-[2fr_1fr]">
+      <section class="panel flex flex-col gap-3 p-5">
+        <div><h2>Jam kerja per minggu</h2><p class="m-0 text-xs text-ink-2">Garis putus = target jam per minggu</p></div>
+        <div class="relative h-64"><canvas id="hoursChart" role="img" aria-label="Grafik batang jam kerja per minggu"></canvas></div>
+        <p class="m-0 text-xs text-ink-2" id="hoursSummary"></p>
+      </section>
+      <section class="panel flex flex-col gap-3 p-5">
+        <div><h2>Ketepatan check-in</h2><p class="m-0 text-xs text-ink-2">Periode terpilih</p></div>
+        <div class="relative h-48"><canvas id="punctualChart" role="img" aria-label="Grafik donat ketepatan check-in"></canvas></div>
+        <dl class="m-0" id="punctualLegend"></dl>
+      </section>
+    </div>
+    <section class="panel flex flex-col gap-3 p-5">
+      <div><h2>Nilai laporan mingguan</h2><p class="m-0 text-xs text-ink-2">Diberi oleh koordinator (0 sampai 100)</p></div>
+      <div class="relative h-56"><canvas id="scoreChart" role="img" aria-label="Grafik garis nilai laporan mingguan"></canvas></div>
+      <p class="m-0 text-xs text-ink-2" id="scoreSummary"></p>
+    </section>
+  </main>
+
+  <script src="../../js/demo-data.js"></script>
+  <script src="../../js/store.js"></script>
+  <script src="../../js/ui.js"></script>
+  <script src="../../js/layout.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="../../js/pages/performance.js"></script>
+</body>
+</html>

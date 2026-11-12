@@ -1,136 +1,55 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Profil · SIMLU Unklab</title>
-
-  <script src="../../assets/vendor/tailwindcss-browser.js"></script>
-  <script src="../../assets/js/tailwind-boot.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <title>Profil | SI Mahasiswa Labor Unklab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&family=Zilla+Slab:wght@600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet">
+  <script src="../../assets/vendor/tailwindcss-browser.js"></script>
+  <script src="../../js/boot.js"></script>
 </head>
-<body class="bg-page font-sans text-body">
-
-  <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 flex w-60 flex-col bg-primary-900 px-4 py-6 transition-transform max-lg:-translate-x-full" aria-label="Menu utama">
-    <a href="../../" class="flex items-center gap-2 px-2 font-semibold text-white">
-      <span class="flex h-9 w-9 items-center justify-center rounded-ctl bg-accent text-lg font-bold text-ink">S</span>
-      SIMLU · Unklab
-    </a>
-    <nav class="mt-8 flex flex-1 flex-col gap-1">
-      <a href="../dashboard/" class="sidebar-item"><i class="bi bi-grid-1x2" aria-hidden="true"></i>Dashboard</a>
-      <a href="../schedule/" class="sidebar-item"><i class="bi bi-calendar-week" aria-hidden="true"></i>Jadwal</a>
-      <a href="../history/" class="sidebar-item"><i class="bi bi-clock-history" aria-hidden="true"></i>Riwayat</a>
-      <a href="../requests/" class="sidebar-item"><i class="bi bi-arrow-left-right" aria-hidden="true"></i>Pengajuan</a>
-      <a href="../notifications/" class="sidebar-item"><i class="bi bi-bell" aria-hidden="true"></i>Notifikasi</a>
-      <a href="../profile/" class="sidebar-item active"><i class="bi bi-person-circle" aria-hidden="true"></i>Profil</a>
-    </nav>
-    <button id="btnLogout" class="sidebar-item w-full text-left"><i class="bi bi-box-arrow-left" aria-hidden="true"></i>Keluar</button>
-  </aside>
-  <div id="backdrop" class="fixed inset-0 z-40 hidden bg-black/40"></div>
-
-  <div class="ml-60 max-lg:ml-0">
-    <div class="sticky top-0 z-30 hidden items-center gap-3 border-b border-line bg-white px-4 py-3 max-lg:flex">
-      <button id="btnMenu" class="rounded-ctl p-2 text-primary-900 hover:bg-primary-50" aria-label="Buka menu">
-        <i class="bi bi-list text-2xl" aria-hidden="true"></i>
-      </button>
-      <span class="font-semibold text-primary-900">SIMLU · Profil</span>
-    </div>
-
-    <main class="mx-auto max-w-6xl px-6 py-8 max-md:px-4">
-      <h1 class="text-2xl font-bold text-ink">Profil</h1>
-      <p class="mt-1 text-sm text-mute">Data akun dan ringkasan kerjamu</p>
-
-      <div class="mt-6 grid grid-cols-5 gap-6 max-lg:grid-cols-1">
-        <!-- Kartu identitas -->
-        <section class="card-soft col-span-3 p-6 max-lg:col-span-1">
-          <div class="flex items-center gap-5 max-md:flex-col max-md:items-start">
-            <span class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-primary text-3xl font-bold text-white" id="avatar">?</span>
-            <div>
-              <h2 class="text-xl font-bold text-ink" id="pName">Memuatâ€¦</h2>
-              <p class="font-mono text-sm text-mute" id="pNim"></p>
-              <span class="badge badge-soft mt-2" id="pRole"></span>
-            </div>
-          </div>
-          <dl class="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 text-sm max-md:grid-cols-1">
-            <div>
-              <dt class="text-xs text-mute">Email</dt>
-              <dd class="text-body" id="pEmail"></dd>
-            </div>
-            <div>
-              <dt class="text-xs text-mute">Program studi</dt>
-              <dd class="text-body" id="pProgram"></dd>
-            </div>
-            <div>
-              <dt class="text-xs text-mute">Status</dt>
-              <dd><span class="badge badge-ok">Mahasiswa labor aktif</span></dd>
-            </div>
-          </dl>
+<body data-role="auto" data-page="profile" data-title="Profil" data-subtitle="Data diri dan keamanan akun">
+  <main id="main">
+    <div class="grid gap-6 lg:grid-cols-[1fr_2fr]">
+      <div class="flex flex-col gap-6">
+        <section class="panel flex flex-col items-center gap-2 p-6 text-center" id="identityCard"></section>
+        <section class="flex flex-col gap-2" id="workCard"><h2>Info kerja</h2><dl class="m-0 divide-y divide-line rounded-xl border border-line bg-surface px-4" id="workInfo"></dl></section>
+      </div>
+      <div class="flex flex-col gap-6">
+        <section class="panel flex flex-col gap-4 p-5">
+          <div><h2>Data diri</h2><p class="m-0 text-xs text-ink-2">Nama dan NIM hanya bisa diubah oleh admin</p></div>
+          <form id="profileForm" class="grid gap-4 sm:grid-cols-2" novalidate>
+            <div><label class="label" for="pName">Nama lengkap</label><input class="input bg-sunken" id="pName" disabled></div>
+            <div><label class="label" for="pId">NIM</label><input class="input bg-sunken" id="pId" disabled></div>
+            <div><label class="label" for="pEmail">Email</label><input class="input" id="pEmail" type="email" autocomplete="email" required><p class="error-msg">Isi email yang valid.</p></div>
+            <div><label class="label" for="pPhone">No. HP / WhatsApp</label><input class="input" id="pPhone" type="tel" autocomplete="tel" required><p class="error-msg">Isi nomor yang bisa dihubungi.</p></div>
+            <div class="flex sm:col-span-2 sm:justify-end"><button class="btn btn-primary w-full sm:w-auto" type="submit">Simpan perubahan</button></div>
+          </form>
         </section>
-
-        <!-- Ringkasan kerja -->
-        <section class="col-span-2 space-y-4 max-lg:col-span-1">
-          <div class="card-soft p-5">
-            <p class="text-xs text-mute">Total jam kerja</p>
-            <p class="mt-1 font-mono text-3xl font-bold text-ink" id="sJam">0j</p>
-          </div>
-          <div class="card-soft p-5">
-            <p class="text-xs text-mute">Kehadiran (On Time)</p>
-            <p class="mt-1 font-mono text-3xl font-bold text-ok" id="sHadir">0</p>
-          </div>
-          <div class="card-soft p-5">
-            <p class="text-xs text-mute">Keterlambatan</p>
-            <p class="mt-1 font-mono text-3xl font-bold text-bad" id="sTelat">0</p>
-          </div>
+        <section class="panel flex flex-col gap-4 p-5">
+          <h2>Ubah password</h2>
+          <form id="passwordForm" class="grid gap-4 sm:grid-cols-3" novalidate>
+            <div><label class="label" for="pwOld">Password lama</label><input class="input" id="pwOld" type="password" autocomplete="current-password" required><p class="error-msg">Isi password lama.</p></div>
+            <div><label class="label" for="pwNew">Password baru</label><input class="input" id="pwNew" type="password" placeholder="Minimal 8 karakter" minlength="8" autocomplete="new-password" required><p class="error-msg">Minimal 8 karakter.</p></div>
+            <div><label class="label" for="pwNew2">Ulangi password baru</label><input class="input" id="pwNew2" type="password" autocomplete="new-password" required><p class="error-msg">Password tidak sama.</p></div>
+            <div class="flex sm:col-span-3 sm:justify-end"><button class="btn btn-secondary w-full sm:w-auto" type="submit">Ubah password</button></div>
+          </form>
+        </section>
+        <section class="flex flex-col gap-3 rounded-xl border border-dashed border-line-strong/60 p-5 sm:flex-row sm:items-center">
+          <div class="flex-1"><h2>Data demo</h2><p class="m-0 text-xs text-ink-2">Kembalikan semua tambah, ubah, hapus, dan absensi ke data awal. Hanya untuk mode demo.</p></div>
+          <button class="btn btn-secondary" type="button" id="resetData"><i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i>Reset data demo</button>
         </section>
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
 
-  <script src="../../js/db.js"></script>
-  <script src="../../js/auth.js"></script>
-  <script>
-    const user = auth.requireRole('student');
-    if (user) init().catch(db.fail);
-
-    function hm(t) { const [h, m] = t.split(':').map(Number); return h * 60 + m; }
-
-    async function init() {
-      // Ambil data terbaru (termasuk yang di-register lewat overlay localStorage)
-      const users = await db.list('users');
-      const me = users.find(u => u.email.toLowerCase() === user.email.toLowerCase()) || user;
-
-      document.getElementById('avatar').textContent = me.name.trim().charAt(0).toUpperCase();
-      document.getElementById('pName').textContent = me.name;
-      document.getElementById('pNim').textContent = me.nim;
-      document.getElementById('pEmail').textContent = me.email;
-      document.getElementById('pProgram').textContent = me.program;
-      const roleEl = document.getElementById('pRole');
-      roleEl.textContent = me.role === 'admin' ? 'Admin' : 'Mahasiswa Labor';
-
-      const rows = (await db.list('attendance')).filter(a => a.student_id === me.id);
-      let minutes = 0, hadir = 0, telat = 0;
-      for (const a of rows) {
-        if (a.check_in && a.check_out) minutes += hm(a.check_out) - hm(a.check_in);
-        if (a.status === 'On Time') hadir++;
-        if (a.status === 'Late') telat++;
-      }
-      document.getElementById('sJam').textContent = (minutes / 60).toFixed(1) + 'j';
-      document.getElementById('sHadir').textContent = hadir;
-      document.getElementById('sTelat').textContent = telat;
-    }
-
-    // Sidebar (layar kecil)
-    const sidebar = document.getElementById('sidebar'), backdrop = document.getElementById('backdrop'), btnMenu = document.getElementById('btnMenu');
-    function toggleMenu(open) {
-      sidebar.classList.toggle('max-lg:-translate-x-full', !open);
-      backdrop.classList.toggle('hidden', !open);
-      btnMenu.setAttribute('aria-expanded', String(open));
-    }
-    btnMenu.addEventListener('click', () => toggleMenu(sidebar.classList.contains('max-lg:-translate-x-full')));
-    backdrop.addEventListener('click', () => toggleMenu(false));
-    document.getElementById('btnLogout').addEventListener('click', () => { auth.logout(); location.replace(auth.root + 'pages/login/'); });
-  </script>
+  <script src="../../js/demo-data.js"></script>
+  <script src="../../js/store.js"></script>
+  <script src="../../js/ui.js"></script>
+  <script src="../../js/layout.js"></script>
+  <script src="../../js/pages/profile.js"></script>
 </body>
 </html>

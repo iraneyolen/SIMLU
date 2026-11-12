@@ -1,4 +1,0 @@
-[
-  { "id": "r1", "student_id": "u1", "type": "Izin", "date": "2026-11-09", "reason": "Sakit", "status": "Approved", "decided_by": "u5" },
-  { "id": "r2", "student_id": "u1", "type": "Tukar Shift", "date": "2026-11-14", "reason": "Tukar shift dengan Grivel (sore ke pagi)", "status": "Pending", "decided_by": null }
-]

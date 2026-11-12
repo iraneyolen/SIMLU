@@ -1,7 +1,0 @@
-[
-  { "id": "u1", "nim": "230102001", "name": "Yolen Irrane Raolika", "email": "raolika@unklab.ac.id", "role": "student", "program": "Sistem Informasi" },
-  { "id": "u2", "nim": "230102002", "name": "Grivel Junivino Pankey", "email": "grivel@unklab.ac.id", "role": "student", "program": "Sistem Informasi" },
-  { "id": "u3", "nim": "230102003", "name": "Illiovine Gloria Mondong", "email": "mondong@unklab.ac.id", "role": "student", "program": "Sistem Informasi" },
-  { "id": "u4", "nim": "230102004", "name": "Gabriela Leswii Sahabir", "email": "sahabir@unklab.ac.id", "role": "student", "program": "Informatika" },
-  { "id": "u5", "nim": "STAFF01", "name": "Admin SIMLU", "email": "admin@unklab.ac.id", "role": "admin", "program": "Kantor Fakultas" }
-]

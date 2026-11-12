@@ -1,115 +1,89 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SIMLU · Sistem Informasi Mahasiswa Labor Universitas Klabat</title>
-
-  <script src="assets/vendor/tailwindcss-browser.js"></script>
-  <script src="assets/js/tailwind-boot.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <title>SI Mahasiswa Labor | Universitas Klabat</title>
+  <meta name="description" content="Pendaftaran, jadwal kerja, absensi, dan kinerja mahasiswa labor Universitas Klabat.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&family=Zilla+Slab:wght@600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet">
+  <script src="assets/vendor/tailwindcss-browser.js"></script>
+  <script src="js/boot.js"></script>
 </head>
-<body class="bg-page font-sans text-body">
-
-  <!-- Navbar publik -->
-  <nav class="sticky top-0 z-40 border-b border-line bg-white">
-    <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 max-md:px-4">
-      <a href="./" class="flex items-center gap-2 font-semibold text-primary-900">
-        <span class="flex h-9 w-9 items-center justify-center rounded-ctl bg-primary text-lg font-bold text-white">S</span>
-        SIMLU · Unklab
-      </a>
-      <div class="flex items-center gap-7">
-        <a href="./" class="text-sm text-body hover:text-primary-ink">Home</a>
-        <a href="pages/login/" class="text-sm text-body hover:text-primary-ink">Masuk</a>
-        <a href="pages/register/" class="btn btn-primary text-sm">Daftar</a>
+<body>
+  <header class="border-b border-line">
+    <nav class="mx-auto flex max-w-6xl items-center gap-6 px-4 py-3 sm:px-6 lg:px-8" aria-label="Utama">
+      <a class="text-base font-bold tracking-tight text-ink no-underline hover:no-underline" href="index.html">SI Labor Unklab</a>
+      <div class="ml-auto hidden items-center gap-6 md:flex">
+        <a class="text-ink-2 no-underline hover:text-ink hover:underline" href="#cara-daftar">Cara daftar</a>
+        <a class="text-ink-2 no-underline hover:text-ink hover:underline" href="#unit-kerja">Unit kerja</a>
       </div>
-    </div>
-  </nav>
-
-  <!-- Hero.
-       Hierarki (alasan): satu fokus = CTA daftar; judul membawa nama sistem
-       sendiri, tanpa label kategori di atasnya. -->
-  <header class="bg-primary-900">
-    <div class="mx-auto max-w-6xl px-6 py-20 max-md:px-4 max-md:py-14">
-      <div class="max-w-2xl">
-        <h1 class="font-display text-4xl font-semibold text-white max-md:text-3xl">
-          SIMLU · Sistem Informasi Mahasiswa Labor
-        </h1>
-        <p class="mt-4 text-lg text-primary-100 max-md:text-base">
-          Jadwal shift dan jadwal kuliah dalam satu dashboard, absensi check-in/check-out
-          online, dan pengajuan izin tanpa formulir kertas.
-        </p>
-        <div class="mt-8 flex items-center gap-4 max-md:flex-col max-md:items-stretch">
-          <a href="pages/register/" class="btn btn-accent px-6 text-base">Daftar Mahasiswa Labor</a>
-          <a href="pages/login/" class="btn btn-outline border-white bg-transparent text-white hover:bg-white/10">Masuk</a>
-        </div>
-        <p class="mt-5 text-xs text-primary-100">Versi demo statis: data tersimpan di browser, akan dimigrasi ke basis data nyata.</p>
+      <div class="ml-auto flex items-center gap-2 md:ml-0">
+        <button class="btn btn-ghost px-2.5" type="button" id="themeBtn" aria-label="Ganti tema terang/gelap"></button>
+        <a class="btn btn-secondary" href="pages/login/index.html">Masuk</a>
+        <a class="btn btn-primary" href="pages/register/index.html">Daftar</a>
       </div>
-    </div>
+    </nav>
   </header>
 
-  <!-- Fitur.
-       Alasan komposisi (R-14): absensi adalah inti sistem, jadi ia tampil sendiri
-       sebagai blok utama; tiga kemampuan lain cukup sebagai daftar, bukan kartu
-       kembar. Hierarki disengaja, bukan grid seragam. -->
-  <main class="mx-auto max-w-6xl px-6 py-16 max-md:px-4">
-    <section class="card-soft grid grid-cols-5 gap-0 overflow-hidden max-lg:grid-cols-1">
-      <div class="col-span-2 bg-primary-50 p-8 max-lg:col-span-1 max-md:p-6">
-        <span class="flex h-11 w-11 items-center justify-center rounded-ctl bg-primary text-white">
-          <i class="bi bi-clock-history text-xl" aria-hidden="true"></i>
-        </span>
-        <h2 class="mt-4 text-lg font-semibold text-ink">Absensi Online</h2>
-        <p class="mt-2 text-sm text-body">
-          Check-in dan check-out langsung dari dashboard. Status, keterlambatan,
-          dan total jam tercatat otomatis di riwayatmu.
-        </p>
+  <main>
+    <section class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:px-8 lg:py-20">
+      <div class="flex flex-col gap-5">
+        <h1 class="text-4xl leading-[1.1] font-bold tracking-tight text-balance sm:text-5xl">Kerja sambil kuliah, tanpa bolak&#8209;balik ke kantor.</h1>
+        <p class="m-0 max-w-[52ch] text-base text-ink-2">Daftar online, dapat shift yang disesuaikan dengan jadwal kuliah, absen dari browser, dan pantau kinerja tiap minggu.</p>
+        <div class="flex flex-col gap-2 sm:flex-row">
+          <a class="btn btn-primary btn-lg" href="pages/register/index.html">Daftar</a>
+          <a class="btn btn-secondary btn-lg" href="pages/login/index.html">Masuk</a>
+        </div>
       </div>
-      <ul class="col-span-3 divide-y divide-line max-lg:col-span-1">
-        <li class="flex items-start gap-4 p-6 max-md:p-5">
-          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-ctl bg-primary-100 text-primary">
-            <i class="bi bi-calendar-week" aria-hidden="true"></i>
-          </span>
-          <div>
-            <h3 class="text-base font-semibold text-ink">Jadwal terpusat</h3>
-            <p class="mt-1 text-sm text-mute">Shift kerja dan jadwal kuliah berdampingan, tanpa buka dua aplikasi.</p>
-          </div>
-        </li>
-        <li class="flex items-start gap-4 p-6 max-md:p-5">
-          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-ctl bg-primary-100 text-primary">
-            <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
-          </span>
-          <div>
-            <h3 class="text-base font-semibold text-ink">Pengajuan izin &amp; tukar shift</h3>
-            <p class="mt-1 text-sm text-mute">Kirim pengajuan, pantau statusnya sampai admin memutuskan.</p>
-          </div>
-        </li>
-        <li class="flex items-start gap-4 p-6 max-md:p-5">
-          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-ctl bg-primary-100 text-primary">
-            <i class="bi bi-graph-up" aria-hidden="true"></i>
-          </span>
-          <div>
-            <h3 class="text-base font-semibold text-ink">Statistik untuk admin</h3>
-            <p class="mt-1 text-sm text-mute">Kehadiran, keterlambatan, dan jam kerja seluruh mahasiswa labor dalam satu dashboard.</p>
-          </div>
-        </li>
-      </ul>
+      <img class="aspect-[3/2] w-full rounded-xl object-cover" src="assets/images/kampus-gedung-1400.webp"
+        srcset="assets/images/kampus-gedung-800.webp 800w, assets/images/kampus-gedung-1400.webp 1400w"
+        sizes="(min-width: 1024px) 45vw, 100vw" width="1400" height="933" fetchpriority="high"
+        alt="Gedung kuliah Universitas Klabat dikelilingi pepohonan dengan pegunungan di belakangnya">
     </section>
 
-    <!-- Info demo -->
-    <section class="mt-10 flex items-start gap-4 rounded-ctl border border-primary-100 bg-primary-50 p-5 max-md:flex-col">
-      <i class="bi bi-info-circle text-xl text-primary" aria-hidden="true"></i>
-      <p class="text-sm text-body">
-        <strong class="text-ink">Catatan demo:</strong> versi ini masih statis. Data tersimpan lokal di browser
-        dan akan dimigrasi ke Supabase sebagai basis data asli pada tahap berikutnya.
-      </p>
+    <section class="border-y border-line bg-surface" id="cara-daftar" aria-labelledby="stepsTitle">
+      <div class="mx-auto max-w-6xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+          <h2 id="stepsTitle" class="text-2xl font-bold tracking-tight">Jadwal pendaftaran Semester Genap 2026/2027</h2>
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+            <span class="status status-ok"><i class="ph ph-check-circle" aria-hidden="true"></i>Pendaftaran dibuka</span>
+            <span class="text-ink-2 tabular" id="quotaTotal"></span>
+          </div>
+        </div>
+        <!-- Urutan langkah dibawa oleh tanggal nyata periode pendaftaran, bukan nomor 01-04 -->
+        <ol class="m-0 mt-8 grid list-none gap-8 p-0 sm:grid-cols-2 lg:grid-cols-4">
+          <li class="border-t-2 border-ink pt-4"><time class="tabular text-sm font-bold" datetime="2026-11-30">Sampai 30 Nov 2026</time><h3 class="mt-2 text-base">Isi formulir</h3><p class="m-0 mt-1 text-ink-2">Data diri, unit pilihan, dan link Google Drive berisi dokumen persyaratan.</p></li>
+          <li class="border-t border-line-strong/60 pt-4"><span class="text-sm font-bold">Sebelum 5 Des 2026</span><h3 class="mt-2 text-base">Diperiksa admin</h3><p class="m-0 mt-1 text-ink-2">Admin mengecek dokumen dan menyetujui atau menolak pendaftaran.</p></li>
+          <li class="border-t border-line-strong/60 pt-4"><time class="tabular text-sm font-bold" datetime="2026-12-05">5 Des 2026</time><h3 class="mt-2 text-base">Pengumuman, lalu masuk</h3><p class="m-0 mt-1 text-ink-2">Setelah disetujui, masuk memakai email kampus atau NIM.</p></li>
+          <li class="border-t border-line-strong/60 pt-4"><time class="tabular text-sm font-bold" datetime="2027-01-12">12 Jan 2027</time><h3 class="mt-2 text-base">Mulai kerja</h3><p class="m-0 mt-1 text-ink-2">Koordinator unit membuat shift sesuai jadwal kuliah kamu.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="mx-auto grid max-w-6xl scroll-mt-20 items-start gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_1.3fr] lg:px-8" id="unit-kerja" aria-labelledby="unitTitle">
+      <img class="aspect-[16/10] w-full rounded-xl object-cover" src="assets/images/kampus-gereja-udara-1200.webp"
+        srcset="assets/images/kampus-gereja-udara-800.webp 800w, assets/images/kampus-gereja-udara-1200.webp 1200w"
+        sizes="(min-width: 1024px) 40vw, 100vw" width="1200" height="675" loading="lazy"
+        alt="Foto udara gedung gereja kampus Universitas Klabat dengan atap merah dan halaman rumput">
+      <div>
+        <h2 id="unitTitle" class="text-2xl font-bold tracking-tight">Unit kerja</h2>
+        <p class="mt-1 mb-5 text-ink-2">Pilih unit sesuai minat dan jadwal kamu.</p>
+        <ul class="m-0 list-none divide-y divide-line border-y border-line p-0" id="unitList"></ul>
+      </div>
     </section>
   </main>
 
-  <footer class="bg-primary-900 py-6 text-center text-primary-100">
-    <small>© 2026 Universitas Klabat · Group Project WDC · Pankey · Raolika · Mondong · Sahabir</small>
+  <footer class="border-t border-line">
+    <div class="mx-auto max-w-6xl px-4 py-6 text-xs text-ink-2 sm:px-6 lg:px-8">© 2026 Universitas Klabat, Kantor Student Labor</div>
+    <!-- TODO: tambahkan kontak resmi kantor labor setelah dikonfirmasi pihak kampus -->
   </footer>
 
+  <script src="js/demo-data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/pages/home.js"></script>
 </body>
 </html>
