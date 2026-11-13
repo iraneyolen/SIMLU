@@ -3,7 +3,7 @@
 # Catatan: publishable key tetap terlihat di browser pengunjung (situs statis); data dilindungi RLS (folder supabase/).
 #
 # Persiapan sekali (oleh pemilik repo):
-#   Settings > Secrets and variables > Actions > New repository secret
+#   Settings > Secrets and variables > Actions > tab Secrets ATAU tab Variables (publishable key bukan rahasia)
 #     SUPABASE_URL  = https://<project-ref>.supabase.co
 #     SUPABASE_KEY  = sb_publishable_...   (JANGAN secret/service_role key)
 #   Settings > Pages > Build and deployment > Source = GitHub Actions
@@ -36,11 +36,11 @@ jobs:
 
       - name: Cek secret tersedia dan berupa publishable key
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || vars.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY || vars.SUPABASE_KEY }}
         run: |
           if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
-            echo "::error::Secret SUPABASE_URL / SUPABASE_KEY belum diisi"; exit 1
+            echo "::error::SUPABASE_URL / SUPABASE_KEY belum diisi (repository secret atau variable)"; exit 1
           fi
           case "$SUPABASE_KEY" in
             sb_publishable_*) ;;
@@ -49,8 +49,8 @@ jobs:
 
       - name: Susun folder situs (hanya file yang dibutuhkan browser)
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || vars.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY || vars.SUPABASE_KEY }}
         run: |
           mkdir _site
           cp -r index.html pages js assets _site/
