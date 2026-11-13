@@ -38,7 +38,7 @@
             <div class="flex sm:col-span-3 sm:justify-end"><button class="btn btn-secondary w-full sm:w-auto" type="submit">Ubah password</button></div>
           </form>
         </section>
-        <section class="flex flex-col gap-3 rounded-xl border border-dashed border-line-strong/60 p-5 sm:flex-row sm:items-center">
+        <section class="flex flex-col gap-3 rounded-xl border border-dashed border-line-strong/60 p-5 sm:flex-row sm:items-center" id="demoSection">
           <div class="flex-1"><h2>Data demo</h2><p class="m-0 text-xs text-ink-2">Kembalikan semua tambah, ubah, hapus, dan absensi ke data awal. Hanya untuk mode demo.</p></div>
           <button class="btn btn-secondary" type="button" id="resetData"><i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i>Reset data demo</button>
         </section>
@@ -46,10 +46,10 @@
     </div>
   </main>
 
+  <script src="../../js/config.js"></script>
   <script src="../../js/demo-data.js"></script>
   <script src="../../js/store.js"></script>
   <script src="../../js/ui.js"></script>
-  <script src="../../js/layout.js"></script>
-  <script src="../../js/pages/profile.js"></script>
+  <script>store.start(["../../js/layout.js", "../../js/pages/profile.js"])</script>
 </body>
 </html>

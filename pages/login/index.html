@@ -45,7 +45,7 @@
           <button class="btn btn-primary w-full" type="submit">Masuk</button>
         </form>
         <p class="m-0 text-center text-ink-2">Belum terdaftar? <a href="../register/index.html">Daftar sebagai mahasiswa labor</a></p>
-        <div class="flex flex-col gap-3 rounded-xl border border-dashed border-line-strong/60 p-4">
+        <div class="flex flex-col gap-3 rounded-xl border border-dashed border-line-strong/60 p-4" id="demoBox">
           <p class="m-0 text-xs text-ink-2">Mode demo (belum terhubung database). Password apa pun diterima. Masuk cepat sebagai:</p>
           <div class="flex flex-wrap gap-2">
             <button class="btn btn-secondary btn-sm" type="button" data-demo="12510207">Mahasiswa</button>
@@ -57,9 +57,10 @@
     </main>
   </div>
 
+  <script src="../../js/config.js"></script>
   <script src="../../js/demo-data.js"></script>
   <script src="../../js/store.js"></script>
   <script src="../../js/ui.js"></script>
-  <script src="../../js/pages/login.js"></script>
+  <script>store.start(["../../js/pages/login.js"])</script>
 </body>
 </html>

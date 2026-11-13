@@ -70,8 +70,9 @@ function renderShell() {
     </dialog>`);
 
   // Topbar + notifikasi
-  const unread = DEMO.notifications.filter((n) => n.unread).length;
-  const notifItems = DEMO.notifications.map((n) => `
+  const notifications = store.list("notifications");
+  const unread = notifications.filter((n) => n.unread).length;
+  const notifItems = notifications.map((n) => `
     <li class="flex gap-3 border-b border-line px-4 py-3 last:border-b-0 ${n.unread ? "bg-sunken" : ""}">
       <div class="min-w-0"><div class="${n.unread ? "font-semibold" : "font-medium"}">${esc(n.title)}</div><div class="text-xs text-ink-2">${esc(n.sub)}</div></div>
     </li>`).join("");
@@ -110,7 +111,13 @@ function renderShell() {
   $("openNav").addEventListener("click", () => drawer.showModal());
   drawer.addEventListener("click", (event) => { if (event.target === drawer) drawer.close(); }); // klik di luar menu
 
-  for (const a of document.querySelectorAll("[data-logout]")) a.addEventListener("click", () => sessionStorage.removeItem("demoRole"));
+  for (const a of document.querySelectorAll("[data-logout]")) a.addEventListener("click", async (event) => {
+    sessionStorage.removeItem("demoRole");
+    if (!store.db) return;
+    event.preventDefault(); // mode supabase: akhiri sesi dulu, baru pindah ke halaman login
+    await store.db.auth.signOut();
+    location.href = a.href;
+  });
 }
 
 renderShell();

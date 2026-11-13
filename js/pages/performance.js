@@ -1,5 +1,4 @@
-// Kinerja mahasiswa: tiga grafik Chart.js dari tabel `attendance` dan `reports`.
-// Jam per minggu lama (sebelum ada catatan absensi) masih memakai angka contoh di demo-data.js.
+// Kinerja mahasiswa: tiga grafik Chart.js, semuanya dihitung dari tabel `attendance` dan `reports`.
 
 const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 // Warna dibaca dari token tema setiap kali grafik digambar, supaya ikut mode terang/gelap.
@@ -18,7 +17,7 @@ function render() {
   readColors();
   charts.splice(0).forEach((c) => c.destroy());
   const month = MONTHS[$("periodFilter").value];
-  const rows = store.list("attendance").filter((r) => r.student === store.ME && r.date.startsWith(month));
+  const rows = store.list("attendance").filter((r) => r.student_id === store.ME && r.date.startsWith(month));
 
   // ---------- Ketepatan check-in ----------
   const counts = { "Tepat waktu": 0, "Terlambat": 0, "Izin / tidak hadir": 0 };
@@ -32,12 +31,17 @@ function render() {
   const rate = total ? Math.round((counts["Tepat waktu"] / total) * 100) : 0;
 
   // ---------- Nilai laporan ----------
-  const graded = store.list("reports").filter((r) => r.student === store.ME && r.status === "graded").sort((a, b) => a.week - b.week);
-  const scores = [...DEMO.performance.scores.filter(([w]) => !graded.some((g) => `Mg ${g.week}` === w)), ...graded.map((g) => [`Mg ${g.week}`, g.score])]
-    .sort((a, b) => a[0].localeCompare(b[0]));
+  const graded = store.list("reports").filter((r) => r.student_id === store.ME && r.status === "graded").sort((a, b) => a.week - b.week);
+  const scores = graded.map((g) => [`Mg ${g.week}`, g.score]);
   const avgScore = scores.length ? Math.round(scores.reduce((s, [, v]) => s + v, 0) / scores.length) : 0;
 
-  const hours = DEMO.performance.weeklyHours;
+  // Jam kerja 4 minggu terakhir (termasuk minggu ini)
+  const mine = store.list("attendance").filter((r) => r.student_id === store.ME);
+  const hours = [-3, -2, -1, 0].map((offset) => {
+    const w = weekInfo(offset);
+    const min = mine.filter((r) => r.date >= w.from && r.date <= w.to).reduce((s, r) => s + (attendanceMinutes(r) || 0), 0);
+    return [`Mg ${w.week}`, Math.round((min / 60) * 10) / 10];
+  });
   const totalMinutes = rows.reduce((s, r) => s + (attendanceMinutes(r) || 0), 0);
 
   statCards($("statList"), [

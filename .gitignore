@@ -1,0 +1,6 @@
+# Pengaturan lokal (publishable key Supabase, sumber data)
+.env
+# Koneksi MCP Supabase sementara (hapus dengan: claude mcp remove supabase -s project)
+.mcp.json
+# MCP Supabase khusus OpenCode untuk project ini (hapus setelah selesai)
+opencode.json

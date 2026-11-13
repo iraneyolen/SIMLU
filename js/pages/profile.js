@@ -1,5 +1,6 @@
-// Profil: dipakai ketiga role. Email dan No. HP bisa diubah (disimpan di tabel `profiles`, id = role).
-// Ubah password hanya divalidasi; mode demo tidak menyimpan password.
+// Profil: dipakai ketiga role. Mode local: email dan No. HP disimpan di tabel `profiles` (id = role),
+// password hanya divalidasi. Mode supabase: hanya No. HP yang bisa diubah (nama, NIM, email dikunci
+// database), password diubah lewat Supabase Auth setelah password lama dicek.
 
 const role = getRole();
 
@@ -39,15 +40,22 @@ $("profileForm").addEventListener("submit", (event) => {
   toast("Data diri disimpan.");
 });
 
-$("passwordForm").addEventListener("submit", (event) => {
+$("passwordForm").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.target;
   $("pwNew2").setCustomValidity($("pwNew").value === $("pwNew2").value ? "" : "Password tidak sama");
   form.classList.add("was-validated");
   if (!form.checkValidity()) return;
+  if (store.db) {
+    const auth = store.db.auth;
+    const { error: wrong } = await auth.signInWithPassword({ email: store.profile.email, password: $("pwOld").value });
+    if (wrong) { toast("Password lama salah."); $("pwOld").focus(); return; }
+    const { error } = await auth.updateUser({ password: $("pwNew").value });
+    if (error) { toast(`Password gagal diubah: ${error.message}`); return; }
+  }
   form.reset();
   form.classList.remove("was-validated");
-  toast("Password diubah (mode demo: tidak disimpan).");
+  toast(store.db ? "Password diubah." : "Password diubah (mode demo: tidak disimpan).");
 });
 $("pwNew2").addEventListener("input", () => $("pwNew2").setCustomValidity(""));
 
@@ -57,4 +65,9 @@ $("resetData").addEventListener("click", () =>
     location.reload();
   }, "Reset"));
 
+// Mode supabase: email kampus dikunci, reset data demo tidak berlaku
+if (store.db) {
+  $("pEmail").readOnly = true;
+  $("demoSection").hidden = true;
+}
 renderIdentity();

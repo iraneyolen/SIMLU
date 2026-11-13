@@ -51,11 +51,29 @@ assets/css/app.css         Token warna (terang + gelap) + komponen Tailwind
 assets/vendor/             tailwindcss-browser.js (v4.3.5)
 ```
 
-## Migrasi ke Supabase nanti
+## Sumber data: local atau Supabase
 
-Ganti isi fungsi di `js/store.js` dengan panggilan supabase-js (nama tabel sama), dan login di
-`js/pages/login.js` dengan Supabase Auth. Catatan: panggilan Supabase bersifat async, jadi pemanggil
-`store.*` perlu `await` saat itu.
+1. Salin `.env.example` jadi `.env` (sudah ada di `.gitignore`, jadi tidak ikut ter-commit).
+2. Isi `DATA_SOURCE=supabase` dan `SUPABASE_KEY=` dengan **publishable key** (`sb_publishable_...`).
+3. Buka lewat Live Server seperti biasa. Tanpa `.env`, web memakai `js/config.js` (mode `local`).
+
+Catatan keamanan: `.env` dibaca oleh browser, jadi isinya tetap bisa dilihat siapa pun yang membuka web.
+Gunanya menjaga key keluar dari repo publik, bukan merahasiakannya. Data di Supabase aman karena RLS
+(folder `supabase/`). Jangan pernah menaruh secret key, service_role key, atau password database di `.env`.
+
+Skema, aturan akses, seed, dan uji database ada di `supabase/README.md`. Pembagian kerja Claude/OpenCode
+ada di `docs/koordinasi-supabase.md`.
+
+## Deploy (GitHub Pages + Supabase)
+
+Workflow `.github/workflows/deploy-pages.yml` berjalan setiap push ke `main`:
+menyalin `index.html`, `pages/`, `js/`, `assets/` ke folder situs, lalu menulis `js/config.js` dari repository
+secret `SUPABASE_URL` dan `SUPABASE_KEY` (wajib publishable key; workflow menolak key lain). Dokumen, SQL, dan
+`.env` tidak ikut dipublikasikan, dan key tidak tersimpan di repo.
+
+Persiapan sekali di GitHub: Settings → Secrets and variables → Actions (isi dua secret di atas), lalu
+Settings → Pages → Source = **GitHub Actions**. Di Supabase: Authentication → URL Configuration, isi Site URL
+dengan alamat Pages.
 
 ## Sebelum dikumpulkan / dipublikasikan
 

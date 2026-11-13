@@ -36,8 +36,10 @@ if (shift) {
 }
 
 // ---------- Jadwal kuliah (ditandai kalau bentrok dengan shift) ----------
-$("classList").innerHTML = DEMO.classesToday.length
-  ? `<ul class="rows">${DEMO.classesToday.map((c) => `
+const classesToday = store.list("classes").filter((c) => c.student_id === store.ME && c.day === DEMO.todayIndex)
+  .sort((a, b) => a.start.localeCompare(b.start));
+$("classList").innerHTML = classesToday.length
+  ? `<ul class="rows">${classesToday.map((c) => `
       <li>
         <span class="tabular w-28 shrink-0 font-semibold">${c.start}–${c.end}</span>
         <div class="min-w-0 flex-1">${person(c.course, c.room)}</div>
@@ -46,9 +48,9 @@ $("classList").innerHTML = DEMO.classesToday.length
   : emptyState("Tidak ada kuliah hari ini");
 
 // ---------- Ringkasan (dihitung dari tabel `shifts` dan `attendance`, sama dengan Riwayat/Kinerja) ----------
-const weekShifts = store.list("shifts").filter((x) => x.student === store.ME);
+const weekShifts = store.list("shifts").filter((x) => x.student_id === store.ME);
 const doneShifts = weekShifts.filter((x) => DEMO.todayIndex === -1 || x.day < DEMO.todayIndex).length;
-const monthRows = store.list("attendance").filter((r) => r.student === store.ME && r.date.startsWith(store.today.slice(0, 7)) && !r.leave);
+const monthRows = store.list("attendance").filter((r) => r.student_id === store.ME && r.date.startsWith(store.today.slice(0, 7)) && !r.leave);
 const attended = monthRows.filter((r) => r.in).length;
 const lateCount = monthRows.filter((r) => attendanceStatus(r)[0].startsWith("Telat")).length;
 const monthMinutes = monthRows.reduce((sum, r) => sum + (attendanceMinutes(r) || 0), 0);
@@ -60,7 +62,7 @@ statCards($("statList"), [
 ]);
 
 // ---------- Pengajuan terakhir ----------
-const myRequests = store.list("requests").filter((r) => r.student === store.ME).reverse().slice(0, 3);
+const myRequests = store.list("requests").filter((r) => r.student_id === store.ME).reverse().slice(0, 3);
 $("requestList").innerHTML = myRequests.length
   ? `<ul class="rows">${myRequests.map((r) => {
       const [label, tone] = REQUEST_STATUS[r.status];
@@ -69,8 +71,8 @@ $("requestList").innerHTML = myRequests.length
   : emptyState("Belum ada pengajuan");
 
 // ---------- Laporan mingguan ----------
-const report = DEMO.weeklyReport;
-const myReports = store.list("reports").filter((r) => r.student === store.ME);
+const report = weekInfo(0);
+const myReports = store.list("reports").filter((r) => r.student_id === store.ME);
 const thisWeek = myReports.find((r) => r.week === report.week);
 const lastGraded = myReports.filter((r) => r.status === "graded").sort((a, b) => b.week - a.week)[0];
 const [reportLabel, reportTone] = thisWeek ? REPORT_STATUS[thisWeek.status] : ["Belum diisi", "warning"];

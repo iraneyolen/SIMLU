@@ -1,5 +1,6 @@
-// Login mode demo: belum ada database. Role ditentukan dari akun demo, password apa pun diterima.
-// Nanti: NIM diubah jadi email kampus, lalu login lewat Supabase Auth.
+// Login. Mode local: role ditentukan dari akun demo, password apa pun diterima.
+// Mode supabase: Supabase Auth (email + password); NIM diubah jadi email kampus. Akun yang belum
+// disetujui, ditolak, atau nonaktif tidak bisa masuk. Tombol masuk cepat hanya tampil di mode local.
 
 const CAMPUS_DOMAIN = "@student.unklab.ac.id";
 const HOME = { student: "dashboard-student", coordinator: "dashboard-coordinator", admin: "dashboard-admin" };
@@ -20,15 +21,39 @@ function findRole(email) {
   return { error: "Akun tidak ditemukan. Coba akun demo di bawah." };
 }
 
+async function signInSupabase(email, password) {
+  const auth = store.db.auth;
+  const { data, error } = await auth.signInWithPassword({ email, password });
+  if (error) return { error: error.message === "Invalid login credentials" ? "Email/NIM atau password salah." : error.message };
+  const uid = data.user.id;
+  const { data: profile } = await store.db.from("profiles").select("role, status").eq("id", uid).maybeSingle();
+  let message = "";
+  if (!profile) message = "Profil akun tidak ditemukan. Hubungi admin labor.";
+  else if (profile.status === "pending") message = "Pendaftaran kamu masih menunggu persetujuan admin.";
+  else if (profile.status === "inactive") message = "Akun kamu sedang nonaktif. Hubungi koordinator atau admin labor.";
+  else if (profile.status === "rejected") {
+    const { data: app } = await store.db.from("applications").select("note").eq("profile_id", uid)
+      .order("created_at", { ascending: false }).limit(1).maybeSingle();
+    message = "Pendaftaran kamu ditolak. " + (app?.note || "");
+  }
+  if (message) { await auth.signOut(); return { error: message }; }
+  return { role: profile.role };
+}
+
 const form = document.getElementById("loginForm");
 const errorBox = document.getElementById("loginError");
+const submitBtn = form.querySelector('[type="submit"]');
 
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
   form.classList.add("was-validated");
   if (!form.checkValidity()) return;
+  errorBox.hidden = true;
 
-  const result = findRole(toEmail(form.identity.value));
+  const email = toEmail(form.identity.value);
+  submitBtn.disabled = true;
+  const result = store.db ? await signInSupabase(email, form.password.value) : findRole(email);
+  submitBtn.disabled = false;
   if (result.error) {
     errorBox.textContent = result.error;
     errorBox.hidden = false;
@@ -40,6 +65,8 @@ form.addEventListener("submit", (event) => {
 
 bindThemeButton($("themeBtn"));
 
+// Masuk cepat (hanya mode local, karena tidak ada password sungguhan di kode publik)
+if (store.db) $("demoBox").hidden = true;
 for (const btn of document.querySelectorAll("[data-demo]")) {
   btn.addEventListener("click", () => {
     form.identity.value = btn.dataset.demo;

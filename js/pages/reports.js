@@ -15,7 +15,7 @@ function currentRows() {
   const reports = store.list("reports").filter((r) => r.week === week && r.status !== "draft");
   const all = store.list("students")
     .filter((s) => s.active && (unit === "Semua unit" || s.unit === unit))
-    .map((s) => ({ student: s, report: reports.find((r) => r.student === s.name) || null }));
+    .map((s) => ({ student: s, report: reports.find((r) => r.student_id === s.id) || null }));
   const status = $("statusFilter").value;
   const statusOf = (x) => (x.report ? REPORT_STATUS[x.report.status] : NOT_SENT);
   return { all, rows: all.filter((x) => status === "Semua status" || statusOf(x)[0] === status), statusOf, week };
@@ -44,17 +44,17 @@ function openReport(id) {
       <div><dt class="text-xs text-ink-2">Pekerjaan</dt><dd class="m-0">${esc(r.summary)}</dd></div>
       ${r.note ? `<div><dt class="text-xs text-ink-2">Kendala</dt><dd class="m-0">${esc(r.note)}</dd></div>` : ""}</dl>`;
   if (isAdmin) {
-    formModal({ title: `Laporan ${r.student} · Mg ${r.week}`, body: detail + (r.comment ? `<div class="rounded-lg bg-sunken px-4 py-3 text-xs text-ink-2">${esc(r.comment)}</div>` : ""), submitLabel: "Tutup", onSubmit: () => {} });
+    formModal({ title: `Laporan ${nameOf(r.student_id)} · Mg ${r.week}`, body: detail + (r.comment ? `<div class="rounded-lg bg-sunken px-4 py-3 text-xs text-ink-2">${esc(r.comment)}</div>` : ""), submitLabel: "Tutup", onSubmit: () => {} });
     return;
   }
   formModal({
-    title: `Nilai Laporan · ${r.student}`,
+    title: `Nilai Laporan · ${nameOf(r.student_id)}`,
     body: `${detail}${field("Nilai (0–100)", "score", 'type="number" min="0" max="100" required', r.score ?? "")}${textarea("Komentar untuk mahasiswa", "comment", "", r.comment)}`,
     submitLabel: "Simpan Nilai",
     onSubmit: (fd) => {
       store.update("reports", id, { score: Number(fd.get("score")), comment: fd.get("comment").trim(), status: "graded" });
       render();
-      toast(`Nilai ${r.student} disimpan.`);
+      toast(`Nilai ${nameOf(r.student_id)} disimpan.`);
     },
   });
 }

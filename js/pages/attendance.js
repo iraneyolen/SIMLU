@@ -1,5 +1,5 @@
 // Absensi: jam berjalan + 6 keadaan tombol (lihat frame "State Tombol Absensi" di Figma).
-// Mode demo: jam diambil dari perangkat dan catatan disimpan di tabel `attendance` (localStorage).
+// Mode local: jam dari perangkat (localStorage). Mode supabase: jam dari server lewat RPC. Data di tabel `attendance`.
 // Nanti: checkIn/checkOut memakai serverTimestamp() dan dokumen di koleksi `attendance`.
 
 const shift = DEMO.todayShift;
@@ -44,8 +44,8 @@ function render() {
     button.textContent = label; button.className = "btn btn-lg w-full max-w-md " + btnClass.replace("btn-light", "btn-secondary"); button.disabled = !enabled;
     el("actionHint").textContent = hint;
   };
-  // Mode demo memakai jam perangkat; nanti diganti jam server (timestamp database).
-  const serverNote = "Mode demo: jam diambil dari perangkat ini.";
+  // Mode local memakai jam perangkat; mode supabase mencatat jam server (RPC check_in_attendance).
+  const serverNote = store.source === "supabase" ? "Jam check-in dan check-out dicatat oleh server." : "Mode demo: jam diambil dari perangkat ini.";
 
   if (state === "no-shift") set("Tidak ada shift hari ini", "badge-neutral", "Belum bisa check-in", "btn-light", false, "Lihat menu Jadwal untuk shift berikutnya.");
   if (state === "too-early") set(`Check-in dibuka ${toHHMM(toMinutes(shift.start) - CHECKIN_OPENS)}`, "badge-neutral", "Belum bisa check-in", "btn-light", false, serverNote);
@@ -80,6 +80,7 @@ el("actionButton").addEventListener("click", () => {
 });
 
 el("resetDemo").addEventListener("click", () => { saveAttendance({}); render(); });
+if (store.source === "supabase") el("resetDemo").hidden = true; // absensi asli tidak bisa diulang dari sini
 
 function tick() {
   el("liveClock").textContent = new Date().toLocaleTimeString("id-ID", { hour12: false }).replace(/\./g, ":");

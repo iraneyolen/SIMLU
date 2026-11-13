@@ -22,7 +22,7 @@ function demoShift() {
 
 // Catatan absensi hari ini milik mahasiswa demo: { checkIn: menit, checkOut: menit }.
 // Disimpan sebagai baris di tabel `attendance` (lihat store.js), jadi ikut muncul di Riwayat dan Absensi Tim.
-const todayRow = () => store.list("attendance").find((r) => r.student === store.ME && r.date === store.today);
+const todayRow = () => store.list("attendance").find((r) => r.student_id === store.ME && r.date === store.today);
 function getAttendance() {
   const row = todayRow();
   if (!row) return {};
@@ -30,10 +30,17 @@ function getAttendance() {
 }
 function saveAttendance(record) {
   const row = todayRow();
+  // Mode supabase: jam check-in/out diisi server lewat RPC, jadi jam perangkat tidak dipakai
+  if (store.source === "supabase") {
+    if (record.checkIn != null && !row) store.checkIn(DEMO.todayShift);
+    else if (record.checkOut != null && row && !row.out) store.checkOut(row);
+    else if (record.checkIn == null) toast("Reset absensi hanya tersedia di mode demo lokal.");
+    return;
+  }
   if (record.checkIn == null) { if (row) store.remove("attendance", row.id); return; }
   const data = { in: toHHMM(record.checkIn), out: record.checkOut != null ? toHHMM(record.checkOut) : "" };
   if (row) store.update("attendance", row.id, data);
-  else store.add("attendance", { student: store.ME, nim: DEMO.user.nim, unit: DEMO.unit.name, date: store.today,
+  else store.add("attendance", { student_id: store.ME, unit: DEMO.unit.name, date: store.today,
     shift: `${DEMO.todayShift.start}–${DEMO.todayShift.end}`, leave: false, ...data });
 }
 
@@ -53,21 +60,9 @@ const DEMO = {
   // dari sekarang supaya tombol Check-In bisa langsung dicoba kapan pun halaman dibuka.
   todayShift: demoShift(),
 
-  classesToday: [
-    { start: "08:00", end: "09:40", course: "Perancangan Web", room: "GK2 · Lab 3" },
-    { start: "10:00", end: "11:40", course: "Basis Data", room: "GK1 · R. 204" },
-    { start: "15:00", end: "16:40", course: "Statistika", room: "GK2 · R. 105" },
-  ],
 
-  stats: { shiftsThisWeek: 4, shiftsDone: 2, hoursThisMonth: "32 j", attendanceRate: "95%", attended: 19, totalShifts: 20, lateCount: 1 },
 
-  requests: [
-    { title: "Izin · Shift Kamis 13 Nov", date: "Diajukan 10 Nov", status: "pending" },
-    { title: "Tukar shift dengan Kevin L.", date: "Diajukan 3 Nov", status: "approved" },
-    { title: "Izin · Shift Senin 27 Okt", date: "Diajukan 25 Okt", status: "rejected" },
-  ],
 
-  weeklyReport: { week: 46, range: "10–16 November", status: "empty", deadline: "Minggu, 16 Nov 23:59", last: "Membantu inventaris koleksi baru dan layanan peminjaman.", lastScore: 88 },
 
   notifications: [
     { icon: "bi-clock", title: "Shift hari ini 13:00–17:00", sub: "Perpustakaan", unread: true },
@@ -137,11 +132,6 @@ Object.assign(DEMO, {
     { date: "Kamis, 30 Okt", shift: "13:00–17:00", in: "12:52", out: "17:05", minutes: 253, status: ["Tepat waktu", "success"] },
   ],
 
-  performance: {
-    weeklyHours: [["Mg 43", 14], ["Mg 44", 16.5], ["Mg 45", 12], ["Mg 46", 8]],
-    punctuality: { "Tepat waktu": 18, "Terlambat": 1, "Izin / tidak hadir": 1 },
-    scores: [["Mg 39", 80], ["Mg 40", 84], ["Mg 41", 82], ["Mg 42", 90], ["Mg 43", 85], ["Mg 44", 88]],
-  },
 
   reportHistory: [
     { week: "Mg 45", summary: "Membantu inventaris koleksi baru dan layanan peminjaman.", status: ["Dinilai", "success"], score: "88" },
@@ -240,3 +230,20 @@ const forMyUnit = (rows) => (getRole() === "coordinator" ? rows.filter((r) => r.
   DEMO.weekLabel = `${fmt(monday, { day: "numeric", month: "short" })} – ${fmt(friday, { day: "numeric", month: "long", year: "numeric" })}`;
   DEMO.todayIndex = offset <= 4 ? offset : -1;
 })();
+
+// ---------- Minggu laporan (minggu ISO, Senin–Minggu) ----------
+// weekInfo(0) = minggu ini, weekInfo(-1) = minggu lalu: { week, from, to, range, deadline }
+function weekInfo(offset = 0) {
+  const now = new Date();
+  const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7) + offset * 7);
+  const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6);
+  const thursday = Date.UTC(monday.getFullYear(), monday.getMonth(), monday.getDate() + 3);
+  const yearStart = Date.UTC(new Date(thursday).getUTCFullYear(), 0, 1);
+  const week = Math.ceil(((thursday - yearStart) / 86400000 + 1) / 7);
+  const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const month = (d, style) => d.toLocaleDateString("id-ID", { month: style });
+  const range = monday.getMonth() === sunday.getMonth()
+    ? `${monday.getDate()}–${sunday.getDate()} ${month(sunday, "long")}`
+    : `${monday.getDate()} ${month(monday, "short")}–${sunday.getDate()} ${month(sunday, "short")}`;
+  return { week, from: ymd(monday), to: ymd(sunday), range, deadline: `Minggu, ${sunday.getDate()} ${month(sunday, "short")} 23:59` };
+}

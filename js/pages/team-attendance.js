@@ -24,16 +24,16 @@ function render() {
   renderTable($("tableBox"), ["Mahasiswa", "Unit", "Shift", "Check-in", "Check-out", "Durasi", "Status", ""],
     rows.map((r) => {
       const min = attendanceMinutes(r);
-      return [person(r.student, r.nim), esc(r.unit), r.shift, r.in || "-", r.out || "-", min != null ? formatDuration(min) : "-",
-        badge(...attendanceStatus(r)), `<button class="btn btn-secondary btn-sm" type="button" data-fix="${r.student}">Koreksi</button>`];
+      return [person(nameOf(r.student_id), nimOf(r.student_id)), esc(r.unit), r.shift, r.in || "-", r.out || "-", min != null ? formatDuration(min) : "-",
+        badge(...attendanceStatus(r)), `<button class="btn btn-secondary btn-sm" type="button" data-fix="${r.student_id}">Koreksi</button>`];
     }), "Tidak ada jadwal untuk tanggal dan filter ini.");
   $("countLabel").textContent = `Menampilkan ${rows.length} dari ${all.length} jadwal`;
 }
 
-function openFix(studentName) {
-  const row = attendanceOn($("dateFilter").value).find((r) => r.student === studentName);
+function openFix(studentId) {
+  const row = attendanceOn($("dateFilter").value).find((r) => r.student_id === studentId);
   formModal({
-    title: `Koreksi Absensi · ${row.student}`,
+    title: `Koreksi Absensi · ${nameOf(row.student_id)}`,
     body: `<p class="m-0 text-xs text-ink-2">Shift ${row.shift}, ${esc(row.unit)}. Kosongkan jam kalau tidak hadir.</p>
       <div class="grid grid-cols-2 gap-4">${field("Check-in", "in", 'type="time"', row.in)}${field("Check-out", "out", 'type="time"', row.out)}</div>
       <label class="flex items-center gap-2.5 text-sm"><input class="size-4 accent-accent-btn" type="checkbox" id="f-leave" name="leave"${row.leave ? " checked" : ""}>Izin (tidak dihitung tidak hadir)</label>`,
@@ -54,6 +54,6 @@ $("tableBox").addEventListener("click", (event) => {
 for (const id of ["dateFilter", "unitFilter", "statusFilter"]) $(id).addEventListener("change", render);
 $("exportBtn").addEventListener("click", () => {
   downloadCSV(`absensi-${$("dateFilter").value}.csv`, ["Tanggal", "Mahasiswa", "NIM", "Unit", "Shift", "Check-in", "Check-out", "Status"],
-    currentRows().rows.map((r) => [r.date, r.student, r.nim, r.unit, r.shift, r.in, r.out, attendanceStatus(r)[0]]));
+    currentRows().rows.map((r) => [r.date, nameOf(r.student_id), nimOf(r.student_id), r.unit, r.shift, r.in, r.out, attendanceStatus(r)[0]]));
 });
 render();

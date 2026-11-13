@@ -1,0 +1,72 @@
+# Deploy SIMLU ke GitHub Pages.
+# Key Supabase tidak disimpan di repo: diambil dari repository secret lalu ditulis ke js/config.js saat deploy.
+# Catatan: publishable key tetap terlihat di browser pengunjung (situs statis); data dilindungi RLS (folder supabase/).
+#
+# Persiapan sekali (oleh pemilik repo):
+#   Settings > Secrets and variables > Actions > New repository secret
+#     SUPABASE_URL  = https://<project-ref>.supabase.co
+#     SUPABASE_KEY  = sb_publishable_...   (JANGAN secret/service_role key)
+#   Settings > Pages > Build and deployment > Source = GitHub Actions
+
+name: Deploy ke GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Izin minimum yang dibutuhkan deploy Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cek secret tersedia dan berupa publishable key
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
+            echo "::error::Secret SUPABASE_URL / SUPABASE_KEY belum diisi"; exit 1
+          fi
+          case "$SUPABASE_KEY" in
+            sb_publishable_*) ;;
+            *) echo "::error::SUPABASE_KEY harus publishable key (sb_publishable_...), bukan secret/service_role"; exit 1 ;;
+          esac
+
+      - name: Susun folder situs (hanya file yang dibutuhkan browser)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          mkdir _site
+          cp -r index.html pages js assets _site/
+          cat > _site/js/config.js <<EOF
+          // Dibuat otomatis oleh workflow deploy-pages.yml. Jangan diedit di situs.
+          const CONFIG = {
+            DATA_SOURCE: "supabase",
+            SUPABASE_URL: "${SUPABASE_URL}",
+            SUPABASE_KEY: "${SUPABASE_KEY}",
+          };
+          EOF
+          touch _site/.nojekyll
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -2,11 +2,12 @@
 // kuliah (seed dari SI Unklab) dan shift (tabel `shifts`) sebagai blok. Bentrok = blok tumpang tindih.
 // Di layar < 768px tampil sebagai daftar per hari.
 
-const myShifts = store.list("shifts").filter((s) => s.student === store.ME);
+const myShifts = store.list("shifts").filter((s) => s.student_id === store.ME);
+const myClasses = store.list("classes").filter((c) => c.student_id === store.ME);
 const WEEK = DEMO.week.map((day, i) => ({
   ...day,
   items: [
-    ...day.items.filter((it) => it.type === "class"),
+    ...myClasses.filter((c) => c.day === i).map((c) => ({ type: "class", start: c.start, end: c.end, title: c.course, sub: c.room })),
     ...myShifts.filter((s) => s.day === i).map((s) => ({
       type: "shift", start: s.start, end: s.end, title: `Shift ${s.unit}`, sub: s.flag === "leave" ? "Izin disetujui" : DEMO.unit.location, leave: s.flag === "leave",
     })),

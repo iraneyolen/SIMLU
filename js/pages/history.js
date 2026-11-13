@@ -6,7 +6,7 @@ const DAYS = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
 const HEAT = { success: "bg-ok-soft text-ok", warning: "bg-warn-soft text-warn", danger: "bg-bad-soft text-bad", info: "bg-info-soft text-info", neutral: "bg-sunken text-ink-2" };
 const fmtDate = (isoDate) => new Date(isoDate + "T00:00").toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short" });
 
-const mine = store.list("attendance").filter((r) => r.student === store.ME).sort((a, b) => b.date.localeCompare(a.date));
+const mine = store.list("attendance").filter((r) => r.student_id === store.ME).sort((a, b) => b.date.localeCompare(a.date));
 
 // Satu kotak per tanggal. Hari tanpa shift tetap tampil (kosong) supaya pola minggu terbaca.
 function renderHeatmap(month, rows) {
