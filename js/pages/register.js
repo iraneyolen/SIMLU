@@ -26,6 +26,15 @@ function showSuccess() {
   success.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
+// Kegagalan pendaftaran ditampilkan sebagai kotak merah di atas formulir (tidak hilang sendiri seperti toast)
+function showError(message) {
+  const box = document.getElementById("registerError");
+  box.textContent = message;
+  box.hidden = false;
+  box.scrollIntoView({ behavior: "smooth", block: "center" });
+  box.focus({ preventScroll: true });
+}
+
 function showNimTaken(message) {
   form.nim.setCustomValidity(message);
   form.nim.parentElement.querySelector(".error-msg").textContent = message;
@@ -42,16 +51,16 @@ async function registerSupabase(v) {
   if (error) {
     // NIM/email unik di tabel profiles: trigger gagal -> "Database error saving new user"
     const taken = /already registered|database error/i.test(error.message);
-    return taken ? showNimTaken("NIM atau email ini sudah pernah mendaftar.") : toast(`Pendaftaran gagal: ${error.message}`);
+    return taken ? showNimTaken("NIM atau email ini sudah pernah mendaftar.") : showError(`Pendaftaran gagal: ${error.message}`);
   }
-  if (!data.session) return toast("Akun dibuat, tetapi konfirmasi email masih aktif. Minta admin mematikannya, lalu hubungi admin.");
+  if (!data.session) return showError("Akun sudah dibuat, tetapi sistem masih meminta verifikasi email, jadi formulir pendaftaran belum tersimpan. Hubungi admin labor sebelum mencoba lagi.");
   const unitId = (name) => store.list("units").find((u) => u.name === name)?.id || null;
   const { error: appError } = await store.db.from("applications").insert({
     profile_id: data.user.id, unit_choice: unitId(v("unit")), unit_alt: unitId(v("unitAlt")),
     motivation: v("motivation"), drive_link: v("driveLink"), status: "pending",
   });
   await auth.signOut(); // belum disetujui, jadi jangan biarkan tetap login
-  if (appError) return toast(`Akun dibuat, tetapi formulir gagal disimpan: ${appError.message}. Hubungi admin labor.`);
+  if (appError) return showError(`Akun sudah dibuat, tetapi formulir gagal disimpan (${appError.message}). Hubungi admin labor.`);
   showSuccess();
 }
 
@@ -65,9 +74,11 @@ form.addEventListener("submit", async (event) => {
   }
   const v = (name) => form[name].value.trim();
   if (store.db) {
+    document.getElementById("registerError").hidden = true;
+    const label = submitBtn.textContent;
     submitBtn.disabled = true;
-    await registerSupabase(v);
-    submitBtn.disabled = false;
+    submitBtn.textContent = "Mengirim…";
+    try { await registerSupabase(v); } finally { submitBtn.disabled = false; submitBtn.textContent = label; }
     return;
   }
   if (store.list("applicants").some((a) => a.nim === v("nim") && a.status !== "rejected")) {
