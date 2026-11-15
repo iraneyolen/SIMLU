@@ -131,7 +131,7 @@ const store = (() => {
   function reset() { for (const table of Object.keys(SEED)) save(table, SEED[table].map((r) => ({ id: newId(), ...r }))); }
 
   // Versi data awal. Naikkan angkanya (atau ganti identitas demo) supaya data lama di browser otomatis di-reset.
-  const SEED_VERSION = `6|${DEMO.user.name}|${ME}`;
+  const SEED_VERSION = `7|${DEMO.user.name}|${ME}`;
   if (readRaw("seed-version") !== SEED_VERSION) {
     reset();
     writeRaw("seed-version", SEED_VERSION);
@@ -166,24 +166,73 @@ const store = (() => {
     } catch { /* tanpa .env: pakai config.js */ }
   }
 
+  // ---------- Percepatan muat ----------
+  // Script yang pasti dibutuhkan mulai diunduh sejak awal (preload), sambil menunggu data dari database.
+  // Setelah data siap, script dijalankan berurutan dari cache browser, jadi tidak perlu menunggu unduhan lagi.
+  const SUPABASE_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
+  const hint = (rel, href, extra = {}) => {
+    const link = Object.assign(document.createElement("link"), { rel, href, ...extra });
+    document.head.appendChild(link);
+  };
+  const wantsSupabase = () => typeof CONFIG !== "undefined" && CONFIG.DATA_SOURCE === "supabase";
+  if (wantsSupabase()) {
+    hint("preconnect", new URL(CONFIG.SUPABASE_URL).origin, { crossOrigin: "anonymous" });
+    hint("preload", SUPABASE_JS, { as: "script" });
+    hint("preload", BASE + "store-supabase.js", { as: "script" });
+  }
+
   async function init() {
     await loadEnv();
-    if (typeof CONFIG === "undefined" || CONFIG.DATA_SOURCE !== "supabase") return;
-    await loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js");
+    if (!wantsSupabase()) return;
+    await loadScript(SUPABASE_JS);
     await loadScript(BASE + "store-supabase.js");
     backend = await createSupabaseBackend(CONFIG);
     me = backend.me;
   }
 
+  // ---------- Layar loading ----------
+  // Halaman aplikasi (body[data-role]): isi disembunyikan dan diganti kerangka sidebar + topbar + blok abu-abu,
+  // lalu halaman lengkap muncul sekaligus setelah data dan script siap. Halaman publik: garis progres saja.
+  // Gaya ada di assets/css/app.css (bagian "Layar loading").
+  function showLoading() {
+    const root = document.documentElement;
+    const app = Boolean(document.body.dataset.role);
+    const sk = (w, h) => `<div class="sk" style="width:${w};height:${h}"></div>`;
+    const el = document.createElement("div");
+    el.id = "appLoading";
+    el.setAttribute("role", "status");
+    el.innerHTML = '<div class="loading-bar" aria-hidden="true"></div>' + (app ? `
+      <div class="loading-shell" aria-hidden="true">
+        <div class="ls-side"><div class="ls-brand">SI Labor Unklab</div>${[70, 55, 62, 75, 50, 68, 58].map((w) => sk(w + "%", "1.1rem")).join("")}</div>
+        <div class="ls-main">
+          <div class="ls-top">${sk("11rem", "1.3rem")}<div style="flex:1"></div>${sk("2.25rem", "2.25rem")}</div>
+          <div class="ls-body">
+            <div class="ls-note">Memuat data…</div>
+            <div class="ls-row">${sk("100%", "6.5rem")}${sk("100%", "6.5rem")}${sk("100%", "6.5rem")}</div>
+            ${sk("100%", "13rem")}
+            <div class="ls-row">${sk("100%", "9rem")}${sk("100%", "9rem")}</div>
+          </div>
+        </div>
+      </div>` : "") + '<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Memuat data…</span>';
+    root.classList.add("app-loading");
+    if (app) root.classList.add("app-loading-shell");
+    document.body.appendChild(el);
+    return () => { root.classList.remove("app-loading", "app-loading-shell"); el.remove(); };
+  }
+
   function start(scripts) {
+    const hideLoading = showLoading();
+    for (const src of scripts) hint("preload", src, { as: "script" });
     ready ??= init();
     ready
       .then(async () => {
-        if (!guard()) return;
+        if (!guard()) return; // sedang dialihkan ke halaman lain: biarkan layar loading tetap tampil
         for (const src of scripts) await loadScript(src);
+        hideLoading();
       })
       .catch((err) => {
         console.error(err);
+        hideLoading();
         document.documentElement.style.visibility = "";
         document.body.innerHTML = `<main class="mx-auto max-w-md px-4 py-16"><h1>Data belum bisa dimuat</h1>
           <p class="text-ink-2">Periksa koneksi internet lalu muat ulang halaman. Detail: ${String(err.message).replace(/</g, "&lt;")}</p></main>`;

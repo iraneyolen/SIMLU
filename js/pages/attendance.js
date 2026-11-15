@@ -1,6 +1,5 @@
 // Absensi: jam berjalan + 6 keadaan tombol (lihat frame "State Tombol Absensi" di Figma).
 // Mode local: jam dari perangkat (localStorage). Mode supabase: jam dari server lewat RPC. Data di tabel `attendance`.
-// Nanti: checkIn/checkOut memakai serverTimestamp() dan dokumen di koleksi `attendance`.
 
 const shift = DEMO.todayShift;
 const el = (id) => document.getElementById(id);
@@ -45,7 +44,7 @@ function render() {
     el("actionHint").textContent = hint;
   };
   // Mode local memakai jam perangkat; mode supabase mencatat jam server (RPC check_in_attendance).
-  const serverNote = store.source === "supabase" ? "Jam check-in dan check-out dicatat oleh server." : "Mode demo: jam diambil dari perangkat ini.";
+  const serverNote = store.source === "supabase" ? "Jam check-in dan check-out dicatat oleh server." : "Mode data contoh: jam diambil dari perangkat ini.";
 
   if (state === "no-shift") set("Tidak ada shift hari ini", "badge-neutral", "Belum bisa check-in", "btn-light", false, "Lihat menu Jadwal untuk shift berikutnya.");
   if (state === "too-early") set(`Check-in dibuka ${toHHMM(toMinutes(shift.start) - CHECKIN_OPENS)}`, "badge-neutral", "Belum bisa check-in", "btn-light", false, serverNote);

@@ -23,7 +23,7 @@ di SQL editor Supabase (Dashboard → SQL Editor → New query → tempel satu f
    mahasiswa; tanpa ini, pendaftar demo tidak bisa langsung mencoba login.)
 3. **Site URL**: Authentication → URL Configuration → Site URL =
    `https://iraneyolen.github.io/SIMLU/` (agar link reset password & redirect
-   benar). Tambahkan juga `http://localhost:8137` ke Redirect URLs untuk uji lokal.
+   benar). Tambahkan juga `http://127.0.0.1:5500` ke Redirect URLs untuk uji lokal.
 4. **Buat 3 akun demo** (Authentication → Users → Add user, isi password lalu
    Auto Confirm User = ON). Metadata (name/nim/phone/program) bisa dikosongkan —
    file seed yang mengisi profil. Yang penting email-nya persis:

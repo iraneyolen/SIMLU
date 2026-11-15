@@ -1,11 +1,14 @@
-# SI Mahasiswa Labor Unklab: demo statis
+# SIMLU: Sistem Informasi Mahasiswa Labor Unklab
 
-HTML + Tailwind CSS v4 (versi browser, lokal) + JavaScript biasa + Chart.js. Arah desain: [DESIGN.md](DESIGN.md). Belum memakai database: semua data CRUD
-disimpan di **localStorage** browser lewat `js/store.js`. Nanti diganti Supabase tanpa mengubah halaman.
+HTML + Tailwind CSS v4 (versi browser, lokal) + JavaScript biasa + Chart.js, dengan Supabase (PostgreSQL + Auth) sebagai
+database. Arah desain: [DESIGN.md](DESIGN.md). Situs live: https://iraneyolen.github.io/SIMLU/
 
-## Menjalankan (VS Code Live Server)
+Semua halaman membaca dan menulis data lewat `js/store.js`, yang punya dua sumber data:
+**local** (data contoh di localStorage, tanpa login sungguhan) dan **supabase** (database + login sungguhan).
 
-1. Buka folder `Claude` (atau `project 3`) di VS Code.
+## Menjalankan: mode local (VS Code Live Server)
+
+1. Buka folder proyek di VS Code.
 2. Klik kanan `index.html` → **Open with Live Server**.
 3. Masuk dari halaman Login, pakai tombol akun demo: **Mahasiswa**, **Koordinator**, atau **Admin**.
    Password apa pun diterima.
@@ -41,8 +44,10 @@ Tombol **Reset data demo** di halaman Profil mengembalikan semua data ke isi awa
 ```
 index.html                 Home publik
 pages/<nama>/index.html    Satu folder per halaman
-js/demo-data.js            Data awal (dummy) + pembantu waktu + role demo
-js/store.js                CRUD localStorage (list/get/add/update/remove/reset)
+js/config.js               Sumber data (local/supabase), URL dan publishable key
+js/demo-data.js            Data contoh mode local + pembantu waktu + role demo
+js/store.js                API data (list/get/add/update/remove), pemilih sumber data, penjaga halaman
+js/store-supabase.js       Adaptor Supabase: cache, pemetaan kolom, check-in/out lewat RPC
 js/boot.js                 Tema terang/gelap + memuat app.css ke Tailwind (di <head>)
 js/ui.js                   Tag status, ringkasan angka, tabel, modal <dialog>, toast, form, ekspor CSV
 js/layout.js               Sidebar + topbar halaman setelah login
@@ -55,7 +60,14 @@ assets/vendor/             tailwindcss-browser.js (v4.3.5)
 
 1. Salin `.env.example` jadi `.env` (sudah ada di `.gitignore`, jadi tidak ikut ter-commit).
 2. Isi `DATA_SOURCE=supabase` dan `SUPABASE_KEY=` dengan **publishable key** (`sb_publishable_...`).
-3. Buka lewat Live Server seperti biasa. Tanpa `.env`, web memakai `js/config.js` (mode `local`).
+3. Jalankan server Python di folder proyek, lalu buka http://127.0.0.1:5500 :
+   ```
+   python -m http.server 5500 --bind 127.0.0.1
+   ```
+   VS Code Live Server **tidak** bisa dipakai untuk mode ini: Live Server tidak menyajikan file berawalan titik,
+   jadi `.env` tidak terbaca dan web jatuh ke mode `local`. `--bind 127.0.0.1` wajib supaya `.env` tidak bisa
+   diakses perangkat lain di jaringan. Server Python tidak memuat ulang otomatis; tekan Ctrl+F5 setelah mengubah file.
+4. Tanpa `.env`, web memakai `js/config.js` (mode `local`).
 
 Catatan keamanan: `.env` dibaca oleh browser, jadi isinya tetap bisa dilihat siapa pun yang membuka web.
 Gunanya menjaga key keluar dari repo publik, bukan merahasiakannya. Data di Supabase aman karena RLS

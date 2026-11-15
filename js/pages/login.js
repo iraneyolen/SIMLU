@@ -66,7 +66,7 @@ form.addEventListener("submit", async (event) => {
 bindThemeButton($("themeBtn"));
 
 // Masuk cepat (hanya mode local, karena tidak ada password sungguhan di kode publik)
-if (store.db) $("demoBox").hidden = true;
+$("demoBox").hidden = Boolean(store.db); // disembunyikan di HTML, hanya tampil di mode local
 for (const btn of document.querySelectorAll("[data-demo]")) {
   btn.addEventListener("click", () => {
     form.identity.value = btn.dataset.demo;

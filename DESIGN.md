@@ -59,6 +59,6 @@ File ini adalah sumber arah desain; `antislop` dipakai sebagai filter di atasnya
 
 ## Stack
 
-- Tailwind CSS v4 (versi browser, disimpan lokal di `assets/vendor/`), tanpa npm atau build step; tetap jalan di VS Code Live Server.
+- Tailwind CSS v4 (versi browser, disimpan lokal di `assets/vendor/`), tanpa npm atau build step.
 - Bootstrap dilepas: modal pakai `<dialog>`, menu pakai Popover API, toast tetap di `js/ui.js`.
-- Logika data (`js/store.js`, `js/demo-data.js`) tidak diubah.
+- Data lewat `js/store.js` (mode local atau Supabase); desain tidak bergantung pada sumber data.

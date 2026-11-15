@@ -192,3 +192,28 @@
   @keyframes dialog-in { from { opacity: 0; transform: translateY(6px) scale(0.98); } }
   @keyframes flash { from { background-color: var(--c-accent-soft); } }
 }
+
+/* ---------- Layar loading (dipasang js/store.js selama data dan script halaman dimuat) ----------
+   Halaman aplikasi: isi disembunyikan dan diganti kerangka (sidebar, topbar, blok abu-abu), lalu muncul sekaligus.
+   Halaman publik: hanya garis progres tipis di atas; isinya tetap terlihat. */
+.app-loading-shell #main { visibility: hidden; }
+#appLoading .loading-bar { position: fixed; inset: 0 0 auto 0; z-index: 60; height: 3px; overflow: hidden; background: var(--c-accent-soft); }
+#appLoading .loading-bar::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 40%; background: var(--c-accent-btn); }
+#appLoading .loading-shell { position: fixed; inset: 0; z-index: 50; background: var(--c-canvas); display: flex; }
+#appLoading .ls-side { display: none; width: 16rem; flex-shrink: 0; border-right: 1px solid var(--c-line); padding: 1.5rem 0.75rem; flex-direction: column; gap: 0.75rem; }
+@media (min-width: 64rem) { #appLoading .ls-side { display: flex; } }
+#appLoading .ls-brand { font-weight: 700; color: var(--c-ink); padding: 0 0.75rem 0.75rem; }
+#appLoading .ls-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+#appLoading .ls-top { height: 4.25rem; border-bottom: 1px solid var(--c-line); display: flex; align-items: center; padding: 0 1.5rem; gap: 0.75rem; }
+#appLoading .ls-body { padding: 1.5rem; display: grid; gap: 1rem; max-width: 72rem; width: 100%; margin: 0 auto; }
+#appLoading .ls-row { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+#appLoading .sk { background: var(--c-sunken); border-radius: 0.5rem; }
+#appLoading .ls-note { color: var(--c-ink-2); font-size: 0.8125rem; }
+@media (prefers-reduced-motion: no-preference) {
+  #appLoading .loading-bar::before { animation: loading-slide 1.1s ease-in-out infinite; }
+  #appLoading .loading-shell { animation: loading-in 180ms ease-out 120ms both; }
+  #appLoading .sk { animation: loading-pulse 1.4s ease-in-out infinite; }
+  @keyframes loading-slide { from { transform: translateX(-100%); } to { transform: translateX(260%); } }
+  @keyframes loading-in { from { opacity: 0; } }
+  @keyframes loading-pulse { 50% { opacity: 0.55; } }
+}

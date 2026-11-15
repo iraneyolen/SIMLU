@@ -1,5 +1,5 @@
 // Data contoh untuk tahap UI. Data yang bisa diubah (CRUD) disalin ke localStorage
-// oleh store.js. Nanti sumbernya diganti database (Supabase), tampilannya tetap.
+// oleh store.js dan hanya dipakai di mode local; di mode supabase data datang dari database.
 // Semua nama dan angka di sini adalah dummy.
 
 // ---------- Pembantu waktu (dipakai dashboard dan absensi) ----------
@@ -54,7 +54,7 @@ const DEMO = {
     program: "Informatika",
   },
 
-  unit: { id: "perpustakaan", name: "Perpustakaan", location: "Lantai 2", coordinatorName: "Ibu M. Sumampouw", maxHoursPerWeek: 20, targetHoursPerWeek: 16 },
+  unit: { id: "perpustakaan", name: "Perpustakaan", location: "Lantai 2", coordinatorName: "M. Sumampouw", maxHoursPerWeek: 20, targetHoursPerWeek: 16 },
 
   // Shift hari ini (null = tidak ada shift). Untuk demo, jamnya dibuat mulai ±10 menit
   // dari sekarang supaya tombol Check-In bisa langsung dicoba kapan pun halaman dibuka.
@@ -66,8 +66,8 @@ const DEMO = {
 
   notifications: [
     { icon: "bi-clock", title: "Shift hari ini 13:00–17:00", sub: "Perpustakaan", unread: true },
-    { icon: "bi-send", title: "Tukar shift disetujui", sub: "Kamis 13 Nov → Kevin L.", unread: true },
-    { icon: "bi-file-text", title: "Laporan minggu ke-46 belum diisi", sub: "Batas Minggu 16 Nov 23:59", unread: true },
+    { icon: "bi-send", title: "Tukar shift disetujui", sub: "Kamis 5 Nov → Kevin L.", unread: true },
+    { icon: "bi-file-text", title: "Laporan minggu ke-46 belum diisi", sub: "Batas Minggu 15 Nov 23:59", unread: true },
     { icon: "bi-calendar3", title: "Jadwal minggu depan sudah dibuat", sub: "Kemarin", unread: false },
   ],
 
@@ -88,7 +88,7 @@ const STATUS_BADGE = {
 };
 
 // ---------- Role demo ----------
-// Tanpa Firebase Auth, role disimpan di sessionStorage oleh halaman login.
+// Mode local: role dipilih di halaman login dan disimpan di sessionStorage (mode supabase: dari tabel profiles).
 const DEMO_USERS = {
   // Identitas mahasiswa demo cukup diubah di DEMO.user; semua data seed ikut menyesuaikan.
   student: { name: DEMO.user.name, initials: DEMO.user.initials, role: "student", unitName: DEMO.user.unitName, nim: DEMO.user.nim, program: DEMO.user.program, email: `${DEMO.user.nim}@student.unklab.ac.id`, phone: "0812 3456 7890" },
@@ -142,10 +142,10 @@ Object.assign(DEMO, {
   lastComment: "Kerja rapi. Lain kali catat jumlah buku yang diproses supaya laporannya lebih terukur.",
 
   requestHistory: [
-    { type: "Izin", shift: "Kamis 13 Nov · 13:00–17:00", replacement: "-", status: ["Menunggu", "warning"] },
-    { type: "Tukar shift", shift: "Rabu 5 Nov · 13:00–17:00", replacement: "Kevin L.", status: ["Disetujui", "success"] },
-    { type: "Izin", shift: "Senin 27 Okt · 13:00–17:00", replacement: "-", status: ["Ditolak", "danger"], note: "Pengajuan kurang dari 24 jam sebelum shift." },
-    { type: "Izin", shift: "Jumat 17 Okt · 08:00–12:00", replacement: "-", status: ["Disetujui", "success"] },
+    { type: "Izin", shift: "Kamis 12 Nov · 13:00–17:00", replacement: "-", status: ["Menunggu", "warning"] },
+    { type: "Tukar shift", shift: "Kamis 5 Nov · 13:00–17:00", replacement: "Kevin L.", status: ["Disetujui", "success"] },
+    { type: "Izin", shift: "Senin 26 Okt · 13:00–17:00", replacement: "-", status: ["Ditolak", "danger"], note: "Pengajuan kurang dari 24 jam sebelum shift." },
+    { type: "Izin", shift: "Jumat 16 Okt · 08:00–12:00", replacement: "-", status: ["Disetujui", "success"] },
   ],
 
   // Dipakai Koordinator (disaring per unit) dan Admin (semua unit)
@@ -188,9 +188,9 @@ Object.assign(DEMO, {
   ],
 
   pendingRequests: [
-    { name: DEMO.user.name, unit: "Perpustakaan", type: "Izin", detail: "Kamis 13 Nov · 13:00–17:00", reason: "Ujian praktikum" },
-    { name: "Grace Pangemanan", unit: "Perpustakaan", type: "Tukar shift", detail: "Jumat 14 Nov → Sarah K.", reason: "Acara keluarga" },
-    { name: "Kevin Lumowa", unit: "Kafetaria", type: "Izin", detail: "Rabu 12 Nov · 08:00–12:00", reason: "Sakit" },
+    { name: DEMO.user.name, unit: "Perpustakaan", type: "Izin", detail: "Kamis 12 Nov · 13:00–17:00", reason: "Ujian praktikum" },
+    { name: "Grace Pangemanan", unit: "Perpustakaan", type: "Tukar shift", detail: "Jumat 13 Nov → Sarah K.", reason: "Acara keluarga" },
+    { name: "Kevin Lumowa", unit: "Kafetaria", type: "Izin", detail: "Rabu 11 Nov · 08:00–12:00", reason: "Sakit" },
   ],
 
   applicants: [

@@ -110,7 +110,7 @@ insert into public.shifts (student_id, unit_id, day, start_time, end_time, flag)
 -- WITA tetap UTC+08, ditulis eksplisit sebagai "+08" supaya tidak
 -- tergantung zona waktu server.
 insert into public.attendance (student_id, unit_id, date, shift_start, shift_end, check_in, check_out, leave) values
-  -- Senin 10 Nov · 13:00–17:00 · tepat waktu
+  -- Selasa 10 Nov · 13:00–17:00 · tepat waktu
   ((select id from demo_ids where email = '12510207@student.unklab.ac.id'),
    (select id from public.units where name = 'Perpustakaan'),
    '2026-11-10', '13:00', '17:00', '2026-11-10 12:57+08', '2026-11-10 17:02+08', false),
@@ -215,9 +215,9 @@ insert into public.notifications (profile_id, title, body, read_at, created_at) 
   ((select id from demo_ids where email = '12510207@student.unklab.ac.id'),
    'Shift hari ini 13:00–17:00', 'Perpustakaan', null, '2026-11-13 07:00+08'),
   ((select id from demo_ids where email = '12510207@student.unklab.ac.id'),
-   'Tukar shift disetujui', 'Kamis 13 Nov → Kevin L.', null, '2026-11-12 16:00+08'),
+   'Tukar shift disetujui', 'Kamis 5 Nov → Kevin L.', null, '2026-11-12 16:00+08'),
   ((select id from demo_ids where email = '12510207@student.unklab.ac.id'),
-   'Laporan minggu ke-46 belum diisi', 'Batas Minggu 16 Nov 23:59', null, '2026-11-12 09:00+08'),
+   'Laporan minggu ke-46 belum diisi', 'Batas Minggu 15 Nov 23:59', null, '2026-11-12 09:00+08'),
   ((select id from demo_ids where email = '12510207@student.unklab.ac.id'),
    'Jadwal minggu depan sudah dibuat', 'Kemarin', now(), '2026-11-11 18:00+08');
 
