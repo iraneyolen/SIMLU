@@ -168,34 +168,44 @@ async function createSupabaseBackend(config) {
   const list = (t) => cache[t] || [];
   const get = (t, id) => list(t).find((r) => r.id === id) || null;
 
+  // Data mentah (raw, bentuk kolom database) adalah sumber kebenaran cache. Setiap tulis mengubah raw dulu,
+  // lalu cache disusun ulang, supaya perubahan beruntun (mis. setujui pendaftar lalu aktifkan akunnya) tidak saling menimpa.
   function add(t, row) {
     const m = MAP[t];
     if (!m) return null;
     if (t === "students") return activateStudent(row);
     if (t === "applicants" || t === "profiles") return unsupported("Pendaftaran dan akun baru dibuat lewat halaman Daftar.");
-    const item = { id: crypto.randomUUID(), ...row };
-    cache[t].push(item);
-    send(db.from(m.table).insert({ id: item.id, ...m.to(item) }), `tambah ${t}`);
-    return item;
+    const id = crypto.randomUUID();
+    const dbRow = { id, ...m.to({ id, ...row }) };
+    raw[m.table].push({ created_at: new Date().toISOString(), ...dbRow }); // created_at sementara, sampai dimuat ulang dari server
+    build();
+    send(db.from(m.table).insert(dbRow), `tambah ${t}`);
+    return get(t, id);
   }
 
   function update(t, id, patch) {
     const m = MAP[t];
-    const i = list(t).findIndex((r) => r.id === id);
-    if (!m || i < 0) return null;
-    const item = { ...cache[t][i], ...patch };
-    cache[t][i] = item;
+    const current = get(t, id);
+    if (!m || !current) return null;
+    const item = { ...current, ...patch };
     const dbId = m.dbId ? m.dbId() : id;
-    send(db.from(m.table).update(m.to(item)).eq("id", dbId), `ubah ${t}`);
+    const changes = m.to(item);
+    const rawRow = raw[m.table].find((r) => r.id === dbId);
+    if (rawRow) Object.assign(rawRow, changes);
     // Keputusan pendaftaran ikut mengubah status akun pendaftar
-    if (t === "applicants" && patch.status === "rejected") send(db.from("profiles").update({ status: "rejected" }).eq("id", item.profile_id), "tolak akun");
-    return item;
+    const rejectProfile = t === "applicants" && patch.status === "rejected";
+    if (rejectProfile) { const p = profileOf(item.profile_id); if (p) p.status = "rejected"; }
+    build();
+    send(db.from(m.table).update(changes).eq("id", dbId), `ubah ${t}`);
+    if (rejectProfile) send(db.from("profiles").update({ status: "rejected" }).eq("id", item.profile_id), "tolak akun");
+    return get(t, id);
   }
 
   function remove(t, id) {
     const m = MAP[t];
     if (!m) return;
-    cache[t] = list(t).filter((r) => r.id !== id);
+    raw[m.table] = raw[m.table].filter((r) => r.id !== id);
+    build();
     send(db.from(m.table).delete().eq("id", id), `hapus ${t}`);
   }
 
