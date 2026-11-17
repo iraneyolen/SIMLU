@@ -24,7 +24,7 @@ function findRole(email) {
 async function signInSupabase(email, password) {
   const auth = store.db.auth;
   const { data, error } = await auth.signInWithPassword({ email, password });
-  if (error) return { error: error.message === "Invalid login credentials" ? "Email/NIM atau password salah." : error.message };
+  if (error) return { error: error.message === "Invalid login credentials" ? "Username atau password salah." : error.message };
   const uid = data.user.id;
   const { data: profile } = await store.db.from("profiles").select("role, status").eq("id", uid).maybeSingle();
   let message = "";
