@@ -55,7 +55,7 @@ File ini adalah sumber arah desain; `antislop` dipakai sebagai filter di atasnya
 - Sidebar senada dengan halaman (bukan blok navy pekat); menu aktif ditandai latar tipis + aksen navy.
 - Konten dipisah dengan garis dan ruang kosong; kartu hanya untuk hal yang memang perlu terangkat (misalnya modal, panel aksi absensi).
 - Heatmap kehadiran: setiap status punya ikon berbeda di selnya, jadi tidak hanya bergantung pada warna (ramah buta warna merah-hijau).
-- Home: urutan langkah pendaftaran dibawa oleh tanggal nyata periode (30 Nov, 5 Des, 12 Jan), bukan nomor 01-04; navbar tidak sticky.
+- Home: urutan langkah pendaftaran dibawa oleh tanggal nyata periode (30 Nov, 5 Des, 12 Jan), bukan nomor 01-04; navbar sticky di atas (revisi tim 17 Nov 2026), tombol Masuk/Daftar hanya di navbar.
 
 ## Stack
 

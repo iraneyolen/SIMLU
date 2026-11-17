@@ -76,7 +76,7 @@ function approve(a) {
 function reject(a) {
   formModal({
     title: `Tolak ${a.name}?`,
-    body: textarea("Alasan penolakan *", "note", 'required placeholder="Contoh: dokumen KHS belum dilampirkan"'),
+    body: textarea("Alasan penolakan *", "note", 'required placeholder="Contoh: dokumen KRS belum dilampirkan"'),
     submitLabel: "Tolak",
     submitClass: "btn-danger",
     onSubmit: (fd) => {
